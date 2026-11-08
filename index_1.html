@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Монгол 13 — хөзрийн тоглоом</title>
+<style>
+  :root{
+    --felt:#0f5a3c; --felt2:#0b4630; --ink:#f3efe3; --muted:#b9cdbf; --gold:#e8c46a;
+    --card:#fffdf7; --red:#c62828; --black:#1b1b1b; --accent:#e8c46a; --danger:#e57373;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{
+    font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans",sans-serif;
+    color:var(--ink);
+    background: radial-gradient(ellipse at 50% 35%, #177350 0%, var(--felt) 45%, var(--felt2) 100%);
+    min-height:100vh;
+  }
+  .wrap{max-width:980px;margin:0 auto;padding:14px 12px 28px;display:flex;flex-direction:column;gap:12px;min-height:100vh}
+  header{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  h1{font-size:20px;margin:0;letter-spacing:.5px}
+  h1 span{color:var(--gold)}
+  .status{font-size:13px;color:var(--muted)}
+  .panel{background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px}
+  button{
+    font:inherit;font-weight:600;border:none;border-radius:10px;padding:10px 16px;cursor:pointer;
+    background:var(--gold);color:#2a2207;transition:transform .08s, opacity .15s;
+  }
+  button:active{transform:scale(.97)}
+  button.ghost{background:rgba(255,255,255,.1);color:var(--ink);border:1px solid rgba(255,255,255,.18)}
+  button.danger{background:transparent;color:var(--danger);border:1px solid rgba(229,115,115,.5)}
+  button:disabled{opacity:.4;cursor:not-allowed}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .seats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:12px 0}
+  .seat{background:rgba(0,0,0,.2);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;border:1px dashed rgba(255,255,255,.2)}
+  .seat.filled{border-style:solid;border-color:rgba(232,196,106,.45)}
+  .seat .who{font-weight:700}
+  .seat .sub{font-size:12px;color:var(--muted)}
+  .opps{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  .opp{min-width:140px;background:rgba(0,0,0,.22);border-radius:12px;padding:10px 12px;border:2px solid transparent;text-align:center}
+  .opp.turn{border-color:var(--gold);box-shadow:0 0 18px rgba(232,196,106,.35)}
+  .opp.passed{opacity:.55}
+  .opp .nm{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px;margin:0 auto}
+  .opp .cnt{font-size:12px;color:var(--muted);margin-top:4px}
+  .backs{display:flex;justify-content:center;margin-top:6px;height:30px}
+  .back{width:20px;height:30px;border-radius:3px;margin-left:-12px;background:repeating-linear-gradient(45deg,#8b1e2b,#8b1e2b 3px,#a72a39 3px,#a72a39 6px);border:1.5px solid #fff}
+  .back:first-child{margin-left:0}
+  .table{
+    min-height:170px;border-radius:90px;background:rgba(0,0,0,.14);border:2px solid rgba(255,255,255,.07);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:16px;
+  }
+  .table .lbl{font-size:13px;color:var(--muted)}
+  .cards{display:flex;justify-content:center;flex-wrap:wrap}
+  .card{
+    width:58px;height:84px;border-radius:8px;background:var(--card);color:var(--black);
+    box-shadow:0 2px 6px rgba(0,0,0,.35);position:relative;user-select:none;flex:0 0 auto;
+    display:flex;flex-direction:column;justify-content:space-between;padding:4px 6px;font-weight:700;
+  }
+  .card.red{color:var(--red)}
+  .card .tl{font-size:16px;line-height:1}
+  .card .tl small{display:block;font-size:14px}
+  .card .mid{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:28px;pointer-events:none}
+  .table .card{margin:0 3px}
+  .hand{display:flex;justify-content:center;flex-wrap:wrap;padding:20px 6px 6px;row-gap:12px}
+  .hand .card{margin-left:-18px;cursor:pointer;transition:transform .12s}
+  .hand .card:first-child{margin-left:0}
+  .hand .card:hover{transform:translateY(-6px)}
+  .hand .card{touch-action:none}
+  .hand .card.placeholder{opacity:.25;box-shadow:0 0 0 2px rgba(232,196,106,.6) inset}
+  .hand.dragging-hand .card:hover{transform:none}
+  .drag-ghost{position:fixed;margin:0!important;z-index:100;pointer-events:none;box-shadow:0 14px 28px rgba(0,0,0,.55);cursor:grabbing;transition:none}
+  body:has(.drag-ghost){cursor:grabbing;user-select:none}
+  .hand .card.sel{transform:translateY(-18px);box-shadow:0 0 0 3px var(--gold),0 6px 12px rgba(0,0,0,.4)}
+  .me{border:2px solid transparent}
+  .me.turn{border-color:var(--gold);box-shadow:0 0 22px rgba(232,196,106,.3)}
+  .mebar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  .msg{min-height:20px;font-size:14px;text-align:center;color:var(--gold)}
+  .msg.err{color:#ffb4a8}
+  .log{font-size:12.5px;color:var(--muted);max-height:120px;overflow:auto;display:flex;flex-direction:column-reverse;gap:2px}
+  .scores{width:100%;border-collapse:collapse;font-size:14px}
+  .scores td,.scores th{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.08);text-align:left}
+  .scores td.num,.scores th.num{text-align:right;font-variant-numeric:tabular-nums}
+  .pos{color:#9be7a8}.neg{color:#ffb4a8}
+  .note{font-size:13px;color:var(--muted);line-height:1.5}
+  .warn{background:rgba(229,115,115,.12);border:1px solid rgba(229,115,115,.35);color:#ffd2cc;border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.5}
+  .inp{font:inherit;width:100%;margin-top:6px;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.25);color:var(--ink)}
+  code{background:rgba(0,0,0,.3);padding:1px 5px;border-radius:4px}
+  details summary{cursor:pointer;color:var(--gold);font-weight:600}
+  details ul{margin:8px 0 0;padding-left:20px;line-height:1.6;font-size:14px}
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px;z-index:5}
+  .overlay .panel{background:#123f2c;max-width:440px;width:100%}
+  @media (max-width:520px){
+    .card{width:46px;height:68px;padding:3px 4px}
+    .card .tl{font-size:13px}.card .tl small{font-size:12px}
+    .card .mid{font-size:21px}
+    .hand .card{margin-left:-16px}
+    .table{border-radius:40px;min-height:140px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+  <header>
+    <h1>🃏 Монгол <span>13</span></h1>
+    <div class="status" id="status">Ачаалж байна…</div>
+  </header>
+  <div id="main"></div>
+</div>
+
+<script type="module">
+/* =====================================================================
+   ⚙️  FIREBASE ТОХИРГОО — Firebase консолоос авсан утгуудаа энд хуулна
+   ===================================================================== */
+const firebaseConfig = {
+  apiKey: "AIzaSyBtzeAujD9b1e11wyHPtl_IK9SwkgSatbM",
+  authDomain: "mongol-13-poker.firebaseapp.com",
+  projectId: "mongol-13-poker",
+  storageBucket: "mongol-13-poker.firebasestorage.app",
+  messagingSenderId: "324019835823",
+  appId: "1:324019835823:web:25c3e6567a84fb7c79555a",
+  measurementId: "G-V6PVXP10FB"
+};
+/* ===================================================================== */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, onSnapshot, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const CONFIG_OK = !String(firebaseConfig.apiKey).startsWith('PASTE');
+
+/* ================== Хөзрийн үндэс ================== */
+const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
+// Дүрс сулаас хүчтэй рүү: Дөрвөлжин ♦ < Цэцэг ♣ < Бундан ♥ < Гил ♠
+const SUITS=['♦','♣','♥','♠'];
+const rank=c=>c>>2, suit=c=>c&3, isRed=c=>suit(c)===0||suit(c)===2;
+const TYPE_MN={single:'Ганц',pair:'Хос',triple:'Гурав',straight:'Дараалал',flush:'Флаш',full:'Фулл хаус',four:'Дөрөв + 1',sflush:'Стрэйт флаш'};
+const FIVE={straight:1,flush:2,full:3,four:4,sflush:5};
+
+function straightTop(cs){ // cs эрэмбэлэгдсэн 5 хөзөр; дээд хөзрийг буцаана
+  const rs=cs.map(rank);
+  if(new Set(rs).size!==5) return null;
+  if(rs[4]-rs[0]===4) return cs[4];                       // 3-4-5-6-7 … J-Q-K-A-2
+  const k=rs.join(',');
+  if(k==='0,1,2,11,12') return cs.find(c=>rank(c)===2);    // A-2-3-4-5 (дээд нь 5)
+  if(k==='0,1,2,3,12') return cs.find(c=>rank(c)===3);     // 2-3-4-5-6 (дээд нь 6)
+  return null;
+}
+function combo(cards){
+  const cs=[...cards].sort((a,b)=>a-b), n=cs.length;
+  if(!n) return null;
+  const rs=cs.map(rank), same=rs.every(r=>r===rs[0]);
+  if(n===1) return {type:'single',n,key:[cs[0]]};
+  if(n===2&&same) return {type:'pair',n,key:[cs[1]]};
+  if(n===3&&same) return {type:'triple',n,key:[cs[2]]};
+  if(n!==5) return null;
+  const flush=cs.every(c=>suit(c)===suit(cs[0]));
+  const st=straightTop(cs);
+  const cnt={}; rs.forEach(r=>cnt[r]=(cnt[r]||0)+1);
+  const g=Object.entries(cnt).map(([r,k])=>[+r,k]).sort((a,b)=>b[1]-a[1]||b[0]-a[0]);
+  if(st!=null&&flush) return {type:'sflush',n,key:[st]};
+  if(g[0][1]===4) return {type:'four',n,key:[g[0][0]]};
+  if(g[0][1]===3&&g[1][1]===2) return {type:'full',n,key:[g[0][0]]};
+  if(flush) return {type:'flush',n,key:[suit(cs[0]),...[...rs].sort((a,b)=>b-a)]};
+  if(st!=null) return {type:'straight',n,key:[st]};
+  return null;
+}
+function cmpKey(a,b){ for(let i=0;i<Math.max(a.length,b.length);i++){ const d=(a[i]??-1)-(b[i]??-1); if(d) return d; } return 0; }
+function strength(cb){ return [FIVE[cb.type]||0,...cb.key]; }
+function beats(a,t){
+  if(!t) return true;
+  if(!t.key) return false; // хуучин хувилбарын ширээ
+  if(a.n!==t.n) return false;
+  if(a.n===5&&a.type!==t.type) return FIVE[a.type]>FIVE[t.type];
+  if(a.type!==t.type) return false;
+  return cmpKey(a.key,t.key)>0;
+}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+/* ================== Тоглоомын төлөв (цэвэр функцүүд) ================== */
+function emptyState(){return {v:0,phase:'lobby',seats:[null,null,null,null],hands:{},turn:-1,table:null,passed:[],scores:{},log:[],winner:null,results:null,lastWinnerSeat:-1,deal:0};}
+const LIMIT=30;
+const isOut=(s,i)=>!!(s.seats[i]&&(s.out||[]).includes(s.seats[i].id));
+const active=s=>s.seats.map((x,i)=>x?i:-1).filter(i=>i>=0);           // суудалд байгаа бүх хүн
+const inGame=s=>active(s).filter(i=>!isOut(s,i));                       // хасагдаагүй тоглогчид
+function findNext(s,from){
+  for(let k=1;k<=4;k++){const i=(from+k)%4; if(s.seats[i]&&!isOut(s,i)) return i;}
+  return from;
+}
+function pushLog(s,e){s.log=[...s.log,e].slice(-30);}
+
+function newMatch(s){ // шинэ тоглолт: оноо 0, хасагдсан хүнгүй
+  s.out=[]; s.matchWinner=null; s.lastWinnerSeat=-1; s.matchActive=true; s.round=0;
+  active(s).forEach(si=>{ s.scores[s.seats[si].id]=0; });
+  return s;
+}
+function doDeal(s){
+  if(!s.matchActive) newMatch(s);
+  const seats=inGame(s);
+  if(seats.length<2) throw 'Дор хаяж 2 тоглогч хэрэгтэй.';
+  const deck=shuffle([...Array(52).keys()]);
+  s.hands={};
+  seats.forEach((si,k)=>{s.hands[si]=deck.slice(k*13,k*13+13).sort((a,b)=>a-b);});
+  let first=s.lastWinnerSeat;
+  if(first<0||!s.seats[first]||isOut(s,first)){
+    let low=99; seats.forEach(si=>{const m=s.hands[si][0]; if(m<low){low=m;first=si;}});
+  }
+  s.phase='playing'; s.turn=first; s.table=null; s.passed=[]; s.winner=null; s.results=null; s.deal=(s.deal||0)+1; s.round=(s.round||0)+1;
+  seats.forEach(si=>{const k=s.seats[si].id; if(s.scores[k]==null) s.scores[k]=0;});
+  pushLog(s,{t:'deal',s:first});
+  return s;
+}
+function doPlay(s,seat,cards){
+  if(s.phase!=='playing') throw 'Тоглолт эхлээгүй байна.';
+  if(s.turn!==seat) throw 'Таны ээлж биш байна.';
+  const hand=s.hands[seat];
+  if(!cards.length) throw 'Хөзрөө сонгоно уу.';
+  if(!cards.every(c=>hand.includes(c))) throw 'Гарт байхгүй хөзөр.';
+  const cb=combo(cards);
+  if(!cb) throw 'Буруу хослол. Ганц, хос, гурав эсвэл 5 хөзрийн хослол (дараалал, флаш, фулл хаус, дөрөв+1, стрэйт флаш) буулгана.';
+  if(s.table&&!beats(cb,s.table)) throw s.table.n!==cb.n?`Ширээн дээр ${s.table.n} хөзөр байна — ${s.table.n} хөзрөөр дарна.`:'Ширээн дээрхээс хүчтэй хослол хэрэгтэй.';
+  s.hands[seat]=hand.filter(c=>!cards.includes(c));
+  s.table={...cb,cards:[...cards].sort((a,b)=>a-b),by:seat};
+  s.passed=[]; // хэн нэг нь дарвал өмнө өнжсөн хүмүүст дахин ээлж ирнэ
+  pushLog(s,{t:'play',s:seat,c:s.table.cards});
+  if(!s.hands[seat].length){ finish(s,seat); return s; }
+  const nx=findNext(s,seat);
+  if(nx===seat){ s.table=null; s.passed=[]; s.turn=seat; }
+  else s.turn=nx;
+  return s;
+}
+function doPass(s,seat){
+  if(s.phase!=='playing') throw 'Тоглолт эхлээгүй байна.';
+  if(s.turn!==seat) throw 'Таны ээлж биш байна.';
+  if(!s.table) throw 'Шинэ тойргийг эхлүүлэгч өнжиж болохгүй.';
+  s.passed=[...s.passed,seat];
+  pushLog(s,{t:'pass',s:seat});
+  const nx=findNext(s,seat);
+  if(nx===s.table.by||nx===seat){
+    const lead=s.table.by; s.table=null; s.passed=[]; s.turn=lead;
+    pushLog(s,{t:'clear',s:lead});
+  } else s.turn=nx;
+  return s;
+}
+function finish(s,win){
+  const res=[], newlyOut=[];
+  inGame(s).forEach(si=>{
+    if(si===win) return;
+    const h=s.hands[si]; let p=h.length; const notes=[];
+    if(h.length>=10){p*=2;notes.push('10+ хөзөр ×2');}
+    const k=s.seats[si].id; s.scores[k]=(s.scores[k]||0)+p;
+    res.push({s:si,p,left:h.length,notes});
+  });
+  inGame(s).forEach(si=>{ const k=s.seats[si].id; if((s.scores[k]||0)>=LIMIT){ newlyOut.push(si); } });
+  s.out=[...(s.out||[]),...newlyOut.map(si=>s.seats[si].id)];
+  res.forEach(r=>{ r.out=newlyOut.includes(r.s); });
+  const left=inGame(s);
+  s.phase='ended'; s.winner=win; s.lastWinnerSeat=win; s.turn=-1;
+  pushLog(s,{t:'win',s:win});
+  newlyOut.forEach(si=>pushLog(s,{t:'out',s:si}));
+  let matchOver=false;
+  if(left.length<=1){
+    matchOver=true; s.matchActive=false; s.matchWinner=left.length?s.seats[left[0]].id:null;
+    if(left.length) pushLog(s,{t:'match',s:left[0]});
+  }
+  s.results={win,res,matchOver,matchWinnerSeat:left.length===1?left[0]:-1};
+}
+
+/* ================== Робот ================== */
+function botMove(s,seat){
+  const hand=[...s.hands[seat]].sort((a,b)=>a-b), t=s.table;
+  const byRank={}; hand.forEach(c=>{(byRank[rank(c)]=byRank[rank(c)]||[]).push(c);});
+  const fives=()=>{
+    const out=[], n=hand.length;
+    for(let a=0;a<n;a++)for(let b=a+1;b<n;b++)for(let c=b+1;c<n;c++)for(let d=c+1;d<n;d++)for(let e=d+1;e<n;e++){
+      const f=[hand[a],hand[b],hand[c],hand[d],hand[e]]; if(combo(f)) out.push(f);
+    }
+    return out;
+  };
+  const byStr=(x,y)=>cmpKey(strength(combo(x)),strength(combo(y)));
+  if(!t){
+    const low=hand[0];
+    const f=fives().filter(x=>x.includes(low)).sort(byStr);
+    if(f.length) return f[0];
+    return byRank[rank(low)].slice(0,3);
+  }
+  let cands=[];
+  if(t.n===1) cands=hand.map(c=>[c]);
+  else if(t.n===2||t.n===3){
+    const need=t.n;
+    Object.values(byRank).forEach(g=>{ if(g.length>=need){ for(let i=need-1;i<g.length;i++){ cands.push([...g.slice(0,need-1),g[i]]); } } });
+  } else if(t.n===5) cands=fives();
+  let ok=cands.filter(c=>{const cb=combo(c);return cb&&beats(cb,t);}).sort(byStr);
+  // 2-оо хэмнэх: өрсөлдөгч олон хөзөртэй бол заримдаа өнжинө
+  const minOpp=Math.min(...inGame(s).filter(i=>i!==seat).map(i=>s.hands[i].length));
+  if(ok.length&&t.n<5&&ok[0].some(c=>rank(c)===12)&&minOpp>4&&Math.random()<.5) ok=[];
+  return ok.length?ok[0]:null;
+}
+
+/* ================== Хадгалалт (онлайн / ганцаараа) ================== */
+let fdb=null,myId=null,mode='loading';
+let state=null, docRef=null, roomCode='', myName='';
+try{ myName=localStorage.getItem('m13name')||''; }catch(e){}
+let selected=new Set(), message='', msgErr=false, botTimer=null, writing=false;
+const names={}; const botNames=['🤖 Робот 1','🤖 Робот 2','🤖 Робот 3'];
+
+function clone(x){return JSON.parse(JSON.stringify(x));}
+function setMsg(t,err){message=t||'';msgErr=!!err;render();}
+
+async function tx(fn){
+  if(mode==='local'){
+    try{ const n=fn(clone(state)); if(n){ n.v=(state.v||0)+1; state=n; render(); scheduleBot(); } }
+    catch(e){ setMsg(String(e),true); }
+    return;
+  }
+  if(writing||!docRef) return; writing=true;
+  try{
+    let err=null;
+    const next=await runTransaction(fdb, async t=>{
+      err=null;
+      const snap=await t.get(docRef);
+      const cur=snap.exists()?clone(snap.data().state||emptyState()):emptyState();
+      let n;
+      try{ n=fn(cur); }catch(e){ err=String(e); return null; }
+      if(!n) return null;
+      n.v=(cur.v||0)+1;
+      t.set(docRef,{state:n,updatedAt:Date.now()});
+      return n;
+    });
+    if(err) setMsg(err,true);
+    else if(next){ state=next; Object.assign(names,state.names||{}); render(); }
+  }catch(e){
+    console.error(e);
+    setMsg('Холболтын алдаа. Дахин оролдоно уу.',true);
+  }finally{ writing=false; }
+}
+
+let onlineId=null;
+function startLocal(){
+  if(myId!=='me') onlineId=myId;
+  mode='local'; myId='me';
+  const s=emptyState();
+  s.seats=[{id:'me'},{id:'bot1',bot:true},{id:'bot2',bot:true},{id:'bot3',bot:true}];
+  names.me='Та';
+  state=doDeal(s); render(); scheduleBot();
+}
+
+function mySeat(){ if(!state) return -1; return state.seats.findIndex(x=>x&&x.id===myId); }
+function botRunnerSeat(){ // хамгийн бага дугаартай хүн тоглогч роботыг удирдана
+  return state.seats.findIndex(x=>x&&!x.bot);
+}
+function scheduleBot(){
+  clearTimeout(botTimer);
+  if(!state||state.phase!=='playing') return;
+  const seat=state.turn, p=state.seats[seat];
+  if(!p||!p.bot) return;
+  if(mode!=='local'&&botRunnerSeat()!==mySeat()) return;
+  const v=state.v;
+  botTimer=setTimeout(()=>{
+    tx(s=>{
+      if(s.v!==v||s.phase!=='playing'||s.turn!==seat) return null;
+      const mv=botMove(s,seat);
+      return mv?doPlay(s,seat,mv):doPass(s,seat);
+    });
+  },900+Math.random()*600);
+}
+
+/* ================== Нэр ================== */
+function nameOf(seat){
+  const p=state&&state.seats[seat]; if(!p) return '—';
+  if(p.bot) return botNames[(+p.id.replace('bot','')-1)%3]||'Робот';
+  if(p.id===myId) return (names[p.id]?names[p.id]+' (та)':'Та');
+  return names[p.id]||'Тоглогч '+(seat+1);
+}
+function nameById(id,idx){
+  const seat=state.seats.findIndex(x=>x&&x.id===id);
+  if(seat>=0) return nameOf(seat);
+  if(id.startsWith('bot')) return botNames[(+id.replace('bot','')-1)%3]||'Робот';
+  if(id===myId) return names[id]?names[id]+' (та)':'Та';
+  return names[id]||'Тоглогч ('+(idx+1)+')';
+}
+async function resolveNames(){
+  return; // нэрийг өрөөний өгөгдөлд хадгална
+  const ids=[...new Set([...state.seats.filter(x=>x&&!x.bot).map(x=>x.id),...Object.keys(state.scores||{}).filter(k=>!k.startsWith('bot'))])].filter(id=>!(id in names));
+  if(!ids.length) return;
+  try{ const ps=await user.profiles(ids); let ch=false; ids.forEach(id=>{const n=ps&&ps[id]&&ps[id].name; if(n){names[id]=n;ch=true;}}); if(ch) render(); }catch(e){}
+}
+
+/* ================== Харагдац ================== */
+const $=s=>document.querySelector(s);
+function esc(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML;}
+function cardHTML(c,extra=''){
+  const red=isRed(c);
+  return `<div class="card ${red?'red':''} ${extra}" data-c="${c}"><div class="tl">${RANKS[rank(c)]}<small>${SUITS[suit(c)]}</small></div><div class="mid">${SUITS[suit(c)]}</div></div>`;
+}
+function logText(e){
+  const n=esc(nameOf(e.s));
+  if(e.t==='play') return `${n}: ${e.c.map(c=>RANKS[rank(c)]+SUITS[suit(c)]).join(' ')}`;
+  if(e.t==='pass') return `${n} өнжлөө`;
+  if(e.t==='clear') return `Бүгд өнжлөө — ${n} шинэ тойрог эхлүүлнэ`;
+  if(e.t==='deal') return `Хөзөр тараалаа — ${n} эхэлнэ`;
+  if(e.t==='win') return `✅ ${n} тойрогт түрүүллээ`;
+  if(e.t==='out') return `❌ ${n} ${LIMIT} оноонд хүрч хасагдлаа`;
+  if(e.t==='match') return `🏆 ${n} тоглолтод хожлоо!`;
+  return '';
+}
+const RULES=`<details><summary>Дүрэм</summary><ul>
+<li>Хүн бүрт 13 хөзөр. Гартаа байгаа хөзрөө хамгийн түрүүнд дуусгасан нь хожно.</li>
+<li>Хүч: 3 &lt; 4 &lt; … &lt; K &lt; A &lt; <b>2</b>. Ижил тоо бол дүрсээр: ♦ Дөрвөлжин &lt; ♣ Цэцэг &lt; ♥ Бундан &lt; ♠ <b>Гил</b>.</li>
+<li>Зөвхөн <b>1, 2, 3 эсвэл 5</b> хөзрөөр гарна: ганц, хос, гурав, эсвэл 5 хөзрийн хослол.</li>
+<li>5 хөзрийн хослол (сулаас хүчтэй): <b>Дараалал</b> &lt; <b>Флаш</b> (5 ижил дүрс) &lt; <b>Фулл хаус</b> (гурав + хос) &lt; <b>Дөрөв + 1</b> &lt; <b>Стрэйт флаш</b>.</li>
+<li>Дараалалд 2 орж болно: J-Q-K-A-2 хамгийн өндөр, A-2-3-4-5 ба 2-3-4-5-6 бол бага дараалал. Дарааллыг дээд хөзрөөр нь харьцуулна.</li>
+<li>Флашийг эхлээд дүрсээр (Гил хамгийн том), дүрс ижил бол хамгийн өндөр хөзрөөр харьцуулна. Фулл хаус, дөрөв+1-ийг гурав/дөрвийн тоогоор харьцуулна.</li>
+<li>Өмнөх хүнтэй ижил тооны хөзрөөр, илүү хүчтэйгээр дарна. 5 хөзрийн хослол бол өөрөөсөө сул төрлийг дарна (флаш дарааллыг дарна гэх мэт).</li>
+<li>Өнжсөн ч дараагийн хүн дарвал танд дахин ээлж ирнэ. Сүүлд буулгасан хүнээс бусад бүгд дараалан өнжвөл тэр хүн шинээр эхэлнэ.</li>
+<li>Эхний тоглолтыг хамгийн бага хөзөртэй нь, дараагийнхыг өмнөх ялагч эхэлнэ.</li>
+<li>Оноо: тойрогт түрүүлсэн хүн 0 оноо авна. Бусад нь гартаа үлдсэн хөзрийн тоогоор оноо авна. 10 ба түүнээс олон хөзөр үлдвэл ×2.</li>
+<li>Нийт оноо ${LIMIT} ба түүнээс дээш болсон хүн хасагдаж, цааш харж сууна. Хамгийн сүүлд үлдсэн хүн тоглолтод хожно.</li>
+</ul></details>`;
+
+/* ===== Гарын хөзрийн дараалал, чирэх ===== */
+let handOrder=[], handDeal=null, dragging=false, pendingRender=false;
+function orderedHand(hand,deal){
+  if(deal!==handDeal){ handDeal=deal; handOrder=[]; }
+  const inHand=new Set(hand);
+  handOrder=handOrder.filter(c=>inHand.has(c));
+  const rest=hand.filter(c=>!handOrder.includes(c)).sort((a,b)=>a-b);
+  handOrder=[...handOrder,...rest];
+  return handOrder.slice();
+}
+function setupHandDrag(hd){
+  hd.querySelectorAll('.card').forEach(el=>{
+    el.addEventListener('pointerdown',e=>{
+      if(e.button>0) return;
+      e.preventDefault();
+      const st={x:e.clientX,y:e.clientY,moved:false,ghost:null,raf:0,lx:e.clientX,ly:e.clientY};
+      const cards=()=>[...hd.querySelectorAll('.card')];
+      const flipMove=(doMove)=>{
+        const list=cards(), before=new Map(list.map(c=>[c,c.getBoundingClientRect()]));
+        doMove();
+        list.forEach(c=>{
+          const a=before.get(c), b=c.getBoundingClientRect(), dx=a.left-b.left, dy=a.top-b.top;
+          if(!dx&&!dy) return;
+          c.style.transition='none'; c.style.transform=`translate(${dx}px,${dy}px)`;
+          c.getBoundingClientRect();
+          c.style.transition='transform .18s cubic-bezier(.2,.8,.2,1)'; c.style.transform='';
+        });
+      };
+      const place=()=>{
+        st.raf=0;
+        const x=st.lx, y=st.ly;
+        st.ghost.style.transform=`translate(${x-st.x}px,${y-st.y}px) rotate(4deg) scale(1.06)`;
+        const others=cards().filter(c=>c!==el);
+        if(!others.length) return;
+        let best=null, bd=Infinity;
+        others.forEach(o=>{ const r=o.getBoundingClientRect(); const cx=r.left+r.width/2, cy=r.top+r.height/2;
+          const d=Math.abs(x-cx)+Math.abs(y-cy)*2; if(d<bd){bd=d;best={o,cx};} });
+        const after=x>best.cx;
+        const ref=after?best.o.nextElementSibling:best.o;
+        if(ref===el||(ref===null&&hd.lastElementChild===el)||el.nextElementSibling===ref) return;
+        flipMove(()=>hd.insertBefore(el,ref));
+      };
+      const move=ev=>{
+        st.lx=ev.clientX; st.ly=ev.clientY;
+        if(!st.moved){
+          if(Math.hypot(ev.clientX-st.x,ev.clientY-st.y)<6) return;
+          st.moved=true; dragging=true;
+          const r=el.getBoundingClientRect();
+          const g=el.cloneNode(true); g.classList.remove('sel'); g.classList.add('drag-ghost');
+          Object.assign(g.style,{left:r.left+'px',top:r.top+'px',width:r.width+'px',height:r.height+'px'});
+          document.body.appendChild(g); st.ghost=g;
+          st.x=ev.clientX; st.y=ev.clientY;
+          el.classList.add('placeholder'); hd.classList.add('dragging-hand');
+        }
+        if(!st.raf) st.raf=requestAnimationFrame(place);
+      };
+      const finish=(cancel)=>{
+        window.removeEventListener('pointermove',move);
+        window.removeEventListener('pointerup',up);
+        window.removeEventListener('pointercancel',cnl);
+        if(st.raf) cancelAnimationFrame(st.raf);
+        if(st.moved){
+          st.ghost.remove(); el.classList.remove('placeholder'); hd.classList.remove('dragging-hand');
+          handOrder=cards().map(c=>+c.dataset.c);
+        }else if(!cancel){
+          const c=+el.dataset.c; selected.has(c)?selected.delete(c):selected.add(c); message='';
+        }
+        dragging=false; pendingRender=false; render();
+      };
+      const up=()=>finish(false), cnl=()=>finish(true);
+      window.addEventListener('pointermove',move);
+      window.addEventListener('pointerup',up);
+      window.addEventListener('pointercancel',cnl);
+    });
+  });
+}
+
+function render(){
+  if(dragging){ pendingRender=true; return; }
+  const main=$('#main'), st=$('#status');
+  if(mode==='loading'){ st.textContent='Холбогдож байна…'; main.innerHTML=`<div class="panel note">Ачаалж байна…</div>`; return; }
+  if(mode==='home'||mode==='config'||mode==='notfound'||mode==='error'){ renderHome(); return; }
+  st.textContent=mode==='local'?'Ганцаараа · 3 роботтой':'Өрөө: '+roomCode;
+  if(state.phase==='lobby') renderLobby();
+  else renderGame();
+}
+
+function renderHome(){
+  $('#status').textContent='';
+  let top='';
+  if(mode==='config') top=`<div class="warn">Firebase тохиргоо хийгдээгүй байна. <b>index.html</b> файлын эхэнд байгаа <code>firebaseConfig</code>-д өөрийн утгуудаа хуулна уу. Түр зуур роботуудтай дасгал хийж болно.</div>`;
+  if(mode==='notfound') top=`<div class="warn">"${esc(roomCode)}" кодтой өрөө олдсонгүй. Кодоо шалгаад дахин оролдоно уу.</div>`;
+  if(mode==='error') top=`<div class="warn">Сервертэй холбогдож чадсангүй. Интернэтээ шалгаад хуудсаа дахин ачаална уу.</div>`;
+  const online=mode!=='config'&&mode!=='error';
+  const hashCode=(location.hash||'').replace('#','').toUpperCase();
+  $('#main').innerHTML=`<div class="panel" style="max-width:460px;margin:20px auto;display:flex;flex-direction:column;gap:14px">
+    ${top}
+    ${online?`
+    <label class="note">Таны нэр<br><input id="nm" maxlength="16" value="${esc(myName)}" placeholder="Жишээ: Бат" class="inp"></label>
+    ${hashCode&&mode!=='notfound'?`<button id="joinHash">"${esc(hashCode)}" өрөөнд орох</button>`:`
+    <button id="create">Шинэ өрөө үүсгэх</button>
+    <div class="row"><input id="code" maxlength="8" placeholder="Өрөөний код" class="inp" style="flex:1;text-transform:uppercase"><button class="ghost" id="join">Нэгдэх</button></div>`}
+    <div class="msg err" id="hmsg"></div>`:''}
+    <button class="ghost" id="local">Ганцаараа роботуудтай дасгал хийх</button>
+    <div>${RULES}</div></div>`;
+  const getName=()=>{ const v=($('#nm')?.value||'').trim(); if(!v){ $('#hmsg').textContent='Нэрээ оруулна уу.'; return null; } myName=v; try{localStorage.setItem('m13name',v);}catch(e){} return v; };
+  const c=$('#create'); if(c) c.onclick=()=>{ if(!getName()) return; const code=Array.from({length:5},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.floor(Math.random()*32)]).join(''); connect(code,true); };
+  const j=$('#join'); if(j) j.onclick=()=>{ if(!getName()) return; const code=($('#code').value||'').trim().toUpperCase(); if(!code){ $('#hmsg').textContent='Өрөөний кодоо оруулна уу.'; return; } connect(code,false); };
+  const jh=$('#joinHash'); if(jh) jh.onclick=()=>{ if(!getName()) return; connect(hashCode,false); };
+  $('#local').onclick=startLocal;
+}
+
+function renderLobby(){
+  const me=mySeat(), seated=me>=0, n=active(state).length;
+  let html=`<div class="panel"><div class="row" style="justify-content:space-between"><b>Өрөө</b><span class="note">${n}/4 тоглогч</span></div>`;
+  html+=`<div class="row" style="margin-top:10px;gap:10px"><span>Өрөөний код: <b style="color:var(--gold);font-size:20px;letter-spacing:2px">${esc(roomCode)}</b></span>
+    <button class="ghost" id="copyLink" style="padding:6px 12px;font-size:13px">Линк хуулах</button>
+    <button class="ghost" id="leaveRoom" style="padding:6px 12px;font-size:13px">Өрөөнөөс гарах</button></div>`;
+  html+=`<div class="seats">`;
+  for(let i=0;i<4;i++){
+    const p=state.seats[i];
+    if(p){
+      html+=`<div class="seat filled"><div class="who">${esc(nameOf(i))}</div><div class="sub">${p.bot?'Компьютер':'Хүн'} · Оноо: ${state.scores[p.id]||0}</div>
+      ${p.id===myId?`<button class="ghost" data-leave="${i}">Суудлаас босох</button>`
+        :(p.bot&&(seated||isHost()))?`<button class="ghost" data-leave="${i}">Робот хасах</button>`
+        :(!p.bot&&isHost())?`<button class="danger" data-leave="${i}">Тоглогчийг хасах</button>`:''}</div>`;
+    }else{
+      html+=`<div class="seat"><div class="who" style="color:var(--muted)">Сул суудал</div>
+      <div class="row">${!seated?`<button data-sit="${i}">Энд суух</button>`:''}${seated?`<button class="ghost" data-bot="${i}">+ Робот</button>`:''}</div></div>`;
+    }
+  }
+  html+=`</div><div class="row">
+    ${isHost()?'':'<span class="note">Тоглолтыг зөвхөн өрөөний эзэн эхлүүлнэ.</span>'}<button id="start" ${(!isHost()||n<2)?'disabled':''} style="${isHost()?'':'display:none'}">${state.matchActive?'Тоглолтыг үргэлжлүүлэх':'Шинэ тоглолт эхлүүлэх'}</button>
+    <button class="ghost" id="local">Ганцаараа роботтой дасгал</button>
+  </div>
+  <p class="note" style="margin-top:12px">Найздаа өрөөний линкийг (эсвэл кодыг) илгээгээрэй. Тэр нэрээ оруулаад сул суудалд сууна. 2–4 хүн тоглоно, сул суудалд робот нэмж болно.</p>
+  <div style="margin-top:8px">${RULES}</div></div>`;
+  if(message) html+=`<div class="msg ${msgErr?'err':''}">${esc(message)}</div>`;
+  // Онооны хүснэгт
+  const sc=Object.entries(state.scores||{}).filter(([k,v])=>!k.startsWith('bot')||v!==0);
+  if(sc.length){
+    html+=`<div class="panel"><div class="row" style="justify-content:space-between;margin-bottom:6px"><b>Нийт оноо</b>
+      ${isHost()?`<button class="danger" id="resetScores">Бүх оноог 0 болгох</button>`:''}</div>
+      <table class="scores">${sc.map(([k,v],i)=>`<tr><td>${esc(nameById(k,i))}</td><td class="num">${isHost()
+        ?`<input type="number" step="1" value="${v}" data-score="${esc(k)}" style="width:80px;font:inherit;padding:4px 6px;border-radius:6px;border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.25);color:var(--ink);text-align:right">`
+        :`<span class="${v>0?'pos':v<0?'neg':''}">${v}</span>`}</td></tr>`).join('')}</table>
+      ${isHost()?`<div class="row" style="margin-top:10px"><button class="ghost" id="saveScores">Оноо хадгалах</button><span class="note">Зөвхөн өрөөний эзэн оноог засна.</span></div>`:''}</div>`;
+  }
+  $('#main').innerHTML=html;
+  const cpl=$('#copyLink'); if(cpl) cpl.onclick=async()=>{ const url=location.origin+location.pathname+'#'+roomCode; try{ await navigator.clipboard.writeText(url); cpl.textContent='Хуулагдлаа ✓'; }catch(e){ cpl.textContent=url; } };
+  const lvr=$('#leaveRoom'); if(lvr) lvr.onclick=()=>{ location.hash=''; location.reload(); };
+  const ss=$('#saveScores'); if(ss) ss.onclick=()=>{
+    const vals={}; document.querySelectorAll('[data-score]').forEach(inp=>{ const n=Math.round(Number(inp.value)); if(Number.isFinite(n)) vals[inp.dataset.score]=n; });
+    tx(s=>{ Object.entries(vals).forEach(([k,n])=>{ s.scores[k]=n; }); return s; }).then(()=>{ if(!msgErr) setMsg('Оноо хадгалагдлаа.'); });
+  };
+  const rs=$('#resetScores'); if(rs) rs.onclick=()=>confirmBox('Бүх оноог 0 болгож шинэ тоглолт эхлүүлэх үү?',()=>tx(s=>{ Object.keys(s.scores).forEach(k=>s.scores[k]=0); s.out=[]; s.matchActive=false; s.matchWinner=null; return s; }));
+  document.querySelectorAll('[data-sit]').forEach(b=>b.onclick=()=>{const i=+b.dataset.sit;tx(s=>{
+    if(s.phase!=='lobby') throw 'Тоглолт эхэлчихсэн байна.';
+    if(s.seats.some(x=>x&&x.id===myId)) return null;
+    if(s.seats[i]) throw 'Энэ суудалд хүн суучихсан.';
+    s.seats[i]={id:myId}; s.names={...(s.names||{}),[myId]:myName}; return s;});});
+  document.querySelectorAll('[data-bot]').forEach(b=>b.onclick=()=>{const i=+b.dataset.bot;tx(s=>{
+    if(s.seats[i]) return null;
+    const used=s.seats.filter(x=>x&&x.bot).map(x=>x.id);
+    const id=['bot1','bot2','bot3'].find(x=>!used.includes(x)); if(!id) return null;
+    s.seats[i]={id,bot:true}; return s;});});
+  document.querySelectorAll('[data-leave]').forEach(b=>b.onclick=()=>{const i=+b.dataset.leave;tx(s=>{ if(s.phase!=='lobby') return null; s.seats[i]=null; return s;});});
+  const sb=$('#start'); if(sb) sb.onclick=()=>isHost()&&tx(s=>{ if(s.phase!=='lobby') return null; return doDeal(s); });
+  $('#local').onclick=()=>{ if(unsub){unsub();unsub=null;} docRef=null; startLocal(); };
+}
+
+function renderGame(){
+  const s=state, me=mySeat(), seats=active(s);
+  const order=me>=0?[...Array(4).keys()].map(k=>(me+k)%4).filter(i=>s.seats[i]&&i!==me):seats;
+  let html=`<div class="opps">`;
+  order.forEach(i=>{
+    const cnt=(s.hands[i]||[]).length, out=isOut(s,i)&&!s.hands[i];
+    html+=`<div class="opp ${s.turn===i?'turn':''} ${s.passed.includes(i)||out?'passed':''}">
+      <div class="nm">${esc(nameOf(i))}</div>
+      <div class="backs">${out?'<span class="note">❌ хасагдсан</span>':Array(Math.min(cnt,13)).fill('<div class="back"></div>').join('')}</div>
+      <div class="cnt">${out?'':cnt+' хөзөр'}${s.passed.includes(i)?' · өнжсөн':''}${out?'':' · '} ${scoreTxt(s.scores[s.seats[i].id])}</div></div>`;
+  });
+  html+=`</div>`;
+  // Ширээ
+  html+=`<div class="table">`;
+  if(s.table){
+    html+=`<div class="lbl">${esc(nameOf(s.table.by))} — ${TYPE_MN[s.table.type]}</div><div class="cards">${s.table.cards.map(c=>cardHTML(c)).join('')}</div>`;
+  }else if(s.phase==='playing'){
+    html+=`<div class="lbl">${esc(nameOf(s.turn))} шинэ тойрог эхлүүлнэ — дурын хослол буулгана</div>`;
+  }
+  html+=`</div>`;
+  // Миний гар
+  if(me>=0&&!s.hands[me]&&isOut(s,me)){
+    html+=`<div class="panel note">❌ Та ${LIMIT} оноонд хүрч хасагдсан тул энэ тоглолтыг харж байна (${scoreTxt(s.scores[myId])}).</div>`;
+  }else if(me>=0){
+    const hand=orderedHand(s.hands[me]||[], s.deal);
+    [...selected].forEach(c=>{ if(!hand.includes(c)) selected.delete(c); });
+    const myTurn=s.phase==='playing'&&s.turn===me;
+    const sel=[...selected], cb=combo(sel);
+    let hint='';
+    if(sel.length) hint=cb?(TYPE_MN[cb.type]+(s.table&&!beats(cb,s.table)?' — дарахгүй':'')):'Буруу хослол';
+    html+=`<div class="panel me ${myTurn?'turn':''}">
+      <div class="mebar"><div><b>${esc(nameOf(me))}</b> <span class="note">· ${hand.length} хөзөр · ${scoreTxt(s.scores[myId])}</span></div>
+      <div class="note">${myTurn?'<span style="color:var(--gold);font-weight:700">Таны ээлж!</span>':(s.phase==='playing'?esc(nameOf(s.turn))+'-ийн ээлж…':'')}</div></div>
+      <div class="hand" id="hand">${hand.map(c=>cardHTML(c,selected.has(c)?'sel':'')).join('')}</div>
+      <div class="msg ${msgErr?'err':''}">${esc(message||hint)}</div>
+      <div class="row" style="justify-content:center">
+        <button id="play" ${!myTurn||!sel.length?'disabled':''}>Буулгах</button>
+        <button class="ghost" id="pass" ${!myTurn||!s.table?'disabled':''}>Өнжих</button>
+        <button class="ghost" id="clear" ${!sel.length?'disabled':''}>Сонголт арилгах</button>
+      </div>
+      <div class="row" style="justify-content:center;margin-top:8px">
+        <span class="note">Хөзрөө чирж байрыг нь солино ·</span>
+        <button class="ghost" id="sortRank" style="padding:6px 10px;font-size:13px">Тоогоор</button>
+        <button class="ghost" id="sortSuit" style="padding:6px 10px;font-size:13px">Дүрсээр</button>
+      </div></div>`;
+  }else{
+    html+=`<div class="panel note">Та энэ тоглолтыг харж байна. Дараагийн тоглолтод суухын тулд тоглолт дууссаны дараа "Өрөө рүү буцах"-ыг дарна уу.</div>`;
+  }
+  // Лог + оноо
+  html+=`<div class="panel"><div class="row" style="justify-content:space-between;margin-bottom:6px"><b>Явц</b>
+    <div class="row">${isHost()?`<button class="danger" id="toLobby">Өрөө рүү буцах</button>`:''}</div></div>
+    <div class="log">${[...s.log].reverse().map(e=>`<div>${logText(e)}</div>`).join('')}</div>
+    <div style="margin-top:8px">${RULES}</div></div>`;
+  // Дууссан
+  if(s.phase==='ended'&&s.results){
+    const r=s.results;
+    const mo=r.matchOver, mw=r.matchWinnerSeat;
+    const sc=k=>s.scores[k]||0;
+    html+=`<div class="overlay"><div class="panel">
+      ${mo&&mw>=0?`<h2 style="margin:0 0 4px">🏆 ${esc(nameOf(mw))} тоглолтод хожлоо!</h2><p class="note" style="margin:0 0 8px">Бусад нь ${LIMIT} оноонд хүрч хасагдлаа.</p>`
+        :`<h2 style="margin:0 0 6px">✅ ${esc(nameOf(r.win))} ${s.round||''}-р тойрогт түрүүллээ</h2>`}
+      ${s.table&&s.table.cards?`<div class="note" style="margin:6px 0 4px">${esc(nameOf(r.win))}-ийн сүүлд буулгасан хөзөр (${TYPE_MN[s.table.type]||''}):</div><div class="cards" style="justify-content:flex-start;gap:4px;margin-bottom:10px">${s.table.cards.map(c=>cardHTML(c)).join('')}</div>`:''}
+      <table class="scores"><tr><th>Тоглогч</th><th class="num">Энэ тойрог</th><th class="num">Нийт / ${LIMIT}</th></tr>
+      <tr><td>${esc(nameOf(r.win))}</td><td class="num pos">0</td><td class="num">${sc(s.seats[r.win].id)}</td></tr>
+      ${r.res.map(x=>`<tr><td>${esc(nameOf(x.s))}${x.out?' <span class="neg">❌ хасагдлаа</span>':''}<div class="note">${x.left} хөзөр үлдсэн${x.notes.length?' · '+x.notes.join(', '):''}</div></td><td class="num neg">+${x.p}</td><td class="num ${sc(s.seats[x.s].id)>=LIMIT?'neg':''}">${sc(s.seats[x.s].id)}</td></tr>`).join('')}
+      </table>
+      <div class="row" style="margin-top:14px">${isHost()?`<button id="again">${mo?'Шинэ тоглолт эхлүүлэх':'Дараагийн тойрог'}</button>`:''}${isHost()?`<button class="ghost" id="toLobby2">Өрөө рүү</button>`:''}${isHost()?'':'<span class="note">Өрөөний эзэн дараагийн тойргийг эхлүүлэхийг хүлээж байна…</span>'}</div></div></div>`;
+  }
+  $('#main').innerHTML=html;
+  const hd=$('#hand');
+  if(hd) setupHandDrag(hd);
+  const sr=$('#sortRank'); if(sr) sr.onclick=()=>{ handOrder.sort((a,b)=>a-b); render(); };
+  const su=$('#sortSuit'); if(su) su.onclick=()=>{ handOrder.sort((a,b)=>suit(a)-suit(b)||a-b); render(); };
+  const pb=$('#play'); if(pb) pb.onclick=()=>{const cards=[...selected]; message=''; tx(s2=>doPlay(s2,me,cards)).then(()=>{ if(!msgErr) selected.clear(); render(); });};
+  const ps=$('#pass'); if(ps) ps.onclick=()=>{message=''; selected.clear(); tx(s2=>doPass(s2,me));};
+  const cl=$('#clear'); if(cl) cl.onclick=()=>{selected.clear(); message=''; render();};
+  const toL=()=>{ if(mode==='local'){ clearTimeout(botTimer); myId=onlineId; mode=(CONFIG_OK&&myId)?'home':'config'; state=null; render(); return; } tx(s2=>{ s2.phase='lobby'; s2.hands={}; s2.table=null; s2.turn=-1; s2.passed=[]; s2.results=null; return s2; }); };
+  const tl=$('#toLobby'); if(tl) tl.onclick=()=>{ if(state.phase==='playing'){ confirmBox('Тоглолтыг зогсоож өрөө рүү буцах уу?',toL); } else toL(); };
+  const tl2=$('#toLobby2'); if(tl2) tl2.onclick=toL;
+  const ag=$('#again'); if(ag) ag.onclick=()=>{ if(!isHost()) return; selected.clear(); tx(s2=>{ if(s2.phase!=='ended') return null; return doDeal(s2); }); };
+}
+function isHost(){ return mode==='local'||(!!state&&!!myId&&state.hostId===myId); }
+function scoreTxt(v){ v=v||0; return `<span class="${v>=20?'neg':''}">${v}/${LIMIT} оноо</span>`; }
+function confirmBox(text,ok){
+  const d=document.createElement('div'); d.className='overlay';
+  d.innerHTML=`<div class="panel"><p>${esc(text)}</p><div class="row"><button id="cy">Тийм</button><button class="ghost" id="cn">Үгүй</button></div></div>`;
+  document.body.appendChild(d);
+  d.querySelector('#cy').onclick=()=>{d.remove();ok();};
+  d.querySelector('#cn').onclick=()=>d.remove();
+}
+
+/* ================== Эхлэл ================== */
+let unsub=null;
+function connect(code,create){
+  roomCode=code; location.hash=code;
+  if(unsub){ unsub(); unsub=null; }
+  docRef=doc(fdb,'rooms',code);
+  mode='loading'; state=null; render();
+  let created=!create;
+  const go=()=>{
+    unsub=onSnapshot(docRef,snap=>{
+      if(mode==='local') return;
+      if(!snap.exists()){ if(created){ mode='notfound'; render(); } return; }
+      const ns=clone(snap.data().state||emptyState());
+      if(state&&ns.v<state.v&&snap.metadata.fromCache) return;
+      const prevPhase=state&&state.phase;
+      state=ns; mode='online'; Object.assign(names,state.names||{});
+      if(prevPhase!==state.phase){ selected.clear(); message=''; }
+      render(); scheduleBot();
+      if(myName&&(state.names||{})[myId]!==myName&&!writing){
+        tx(s2=>{ if((s2.names||{})[myId]===myName) return null; s2.names={...(s2.names||{}),[myId]:myName}; return s2; });
+      }
+    },err=>{ console.error(err); mode='error'; render(); });
+  };
+  if(create){
+    tx(s2=>{
+      if(s2.hostId) throw 'Код давхардлаа, дахин оролдоно уу.';
+      s2.hostId=myId; s2.names={[myId]:myName}; s2.seats[0]={id:myId}; return s2;
+    }).then(()=>{ created=true; go(); });
+  } else go();
+}
+render();
+(async()=>{
+  if(!CONFIG_OK){ mode='config'; render(); return; }
+  try{
+    const app=initializeApp(firebaseConfig);
+    fdb=getFirestore(app);
+    const auth=getAuth(app);
+    const cred=await signInAnonymously(auth);
+    myId=cred.user.uid;
+  }catch(e){ console.error(e); mode='error'; render(); return; }
+  const code=(location.hash||'').replace('#','').toUpperCase();
+  if(code&&myName){ connect(code,false); }
+  else { mode='home'; render(); }
+})();
+</script>
+</body>
+</html>
