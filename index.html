@@ -1283,7 +1283,11 @@ else{
   try{
     const app=initializeApp(firebaseConfig);
     auth=getAuth(app); fdb=getFirestore(app);
-    onAuthStateChanged(auth,u=>{ if(screen==='local') { onlineId=u?u.uid:null; return; } if(u) onLogin(u); else onLogout(); });
+    onAuthStateChanged(auth,u=>{
+      if(u&&(u.isAnonymous||!u.email)){ signOut(auth).catch(()=>{}); return; }   // хуучин хувилбарын нэргүй нэвтрэлтийг гаргана
+      if(screen==='local') { onlineId=u?u.uid:null; return; }
+      if(u) onLogin(u); else onLogout();
+    });
   }catch(e){ console.error(e); screen='error'; render(); }
 }
 window.addEventListener('beforeunload',()=>{ if(search) deleteDoc(search.qref).catch(()=>{}); });
