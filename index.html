@@ -526,7 +526,7 @@ function setupHandDrag(hd){
       if(e.button>0) return;
       e.preventDefault();
       const st={x:e.clientX,y:e.clientY,moved:false,ghost:null,raf:0,lx:e.clientX,ly:e.clientY};
-      dragging=true; // дарж эхэлмэгц дэлгэц шинэчлэхийг түр зогсооно
+      dragging=true; window.__lastPtr=Date.now(); // дарж эхэлмэгц дэлгэц шинэчлэхийг түр зогсооно
       const cards=()=>[...hd.querySelectorAll('.card')];
       const flipMove=(doMove)=>{
         const list=cards(), before=new Map(list.map(c=>[c,c.getBoundingClientRect()]));
@@ -554,6 +554,7 @@ function setupHandDrag(hd){
         flipMove(()=>hd.insertBefore(el,ref));
       };
       const move=ev=>{
+        window.__lastPtr=Date.now();
         st.lx=ev.clientX; st.ly=ev.clientY;
         if(!st.moved){
           if(Math.hypot(ev.clientX-st.x,ev.clientY-st.y)<6) return;
@@ -630,6 +631,9 @@ async function tx(fn){
     return;
   }
   if(writing||!gameRef) return; writing=true;
+  const myRef=gameRef, started=Date.now();
+  // 10 секундээс удаан хариу ирэхгүй бол түгжээг суллаж, төлөвийг дахин татна (интернэт тасарсан үед гацахгүй)
+  const guard=setTimeout(()=>{ if(writing&&gameRef===myRef){ writing=false; lastActV=-1; resync('Холболт удааширлаа. Төлөвийг шинэчиллээ.'); } },10000);
   try{
     let err=null;
     const next=await runTransaction(fdb, async t=>{
@@ -643,11 +647,30 @@ async function tx(fn){
       t.update(gameRef,{state:n,updatedAt:Date.now()});
       return n;
     });
-    if(err) setMsg(err,true);
-    else if(next){ state=next; afterState(); render(); }
-  }catch(e){ console.error(e); lastActV=-1; setMsg('Холболтын алдаа. Дахин оролдоно уу.',true); }
-  finally{ writing=false; }
+    if(gameRef!==myRef) return;
+    if(err){
+      // Гарт байхгүй / ээлж биш гэх мэт алдаа нь ихэвчлэн хуучирсан дэлгэцээс болдог: автоматаар шинэчилнэ
+      if(/Гарт байхгүй|ээлж биш|эхлээгүй/.test(err)){ selected.clear(); await resync('Ширээ шинэчлэгдлээ. Хөзрөө дахин сонгоно уу.'); }
+      else setMsg(err,true);
+    }
+    else if(next&&(!state||next.v>=state.v)){ state=next; afterState(); render(); }
+  }catch(e){ console.error(e); lastActV=-1; if(gameRef===myRef) await resync('Холболтын алдаа гарлаа. Дахин оролдоно уу.'); }
+  finally{ clearTimeout(guard); if(Date.now()-started<10000||gameRef!==myRef) writing=false; }
 }
+/* Серверээс хамгийн сүүлийн төлөвийг татаж дэлгэцийг шинэчилнэ (refresh хийхтэй адил, хуудас дахин ачаалахгүй) */
+async function resync(msg){
+  if(!gameRef||screen!=='game') return;
+  try{
+    const sn=await getDoc(gameRef);
+    if(sn.exists()){ state=clone(sn.data().state); }
+  }catch(e){ console.warn('resync',e); }
+  dragging=false; pendingRender=false; lastActV=-1;
+  selected.clear();
+  message=msg||''; msgErr=false;
+  afterState(); render();
+}
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible'&&screen==='game') resync(); });
+window.addEventListener('online',()=>{ if(screen==='game') resync('Интернэт сэргэлээ.'); });
 
 /* ================== Нэвтрэлт ================== */
 const AUTH_ERR={'auth/email-already-in-use':'Энэ имэйлээр бүртгэл үүссэн байна.','auth/invalid-email':'Имэйл буруу байна.',
@@ -799,9 +822,7 @@ function openGame(id){
     if(!snap.exists()){ toast('Тоглоом олдсонгүй'); if(profile&&profile.activeGame===id) updateDoc(doc(fdb,'users',myId),{activeGame:null}).catch(()=>{}); goHome(); return; }
     const ns=clone(snap.data().state);
     if(state&&ns.v<state.v) return;
-    const prevPhase=state&&state.phase;
     state=ns;
-    if(prevPhase!==state.phase){ selected.clear(); message=''; }
     afterState(); render();
   },err=>{ console.error(err); toast('Холболт тасарлаа'); });
 }
@@ -819,8 +840,17 @@ async function leaveGame(){
 }
 
 /* ---------- Төлөв өөрчлөгдсөний дараа ---------- */
+let lastDealSeen=null, lastPhaseSeen=null;
 function afterState(){
   const s=state; if(!s) return;
+  if(s.deal!==lastDealSeen||s.phase!==lastPhaseSeen){
+    if(s.deal!==lastDealSeen) selected.clear();
+    if(s.phase!==lastPhaseSeen){ selected.clear(); message=''; }
+    lastDealSeen=s.deal; lastPhaseSeen=s.phase;
+  }
+  // сонгосон хөзөр гарт байгаа эсэхийг үргэлж шалгана
+  const ms=mySeat(); const hand=ms>=0?(s.hands[ms]||[]):[];
+  [...selected].forEach(c=>{ if(!hand.includes(c)) selected.delete(c); });
   const mySeatI=mySeat();
   const key=s.phase+':'+s.turn+':'+s.round;
   if(key!==prevTurnKey){
@@ -906,6 +936,7 @@ function endLocal(){ myId=onlineId; state=null; screen=myId?'home':(CONFIG_OK?'a
 function mySeat(){ if(!state) return -1; return state.seats.findIndex(x=>x&&x.id===myId); }
 function tick(){
   updateTimers();
+  if(dragging&&Date.now()-(window.__lastPtr||0)>4000){ dragging=false; pendingRender=false; render(); }   // гацсан чирэлтийг суллана
   if(!state||(screen!=='game'&&screen!=='local')||writing) return;
   const s=state, t=now();
   if(lastActV===s.v) return;
@@ -1536,7 +1567,7 @@ function renderGame(){
   let html='';
   // Дээд мөр
   html+=`<div class="row sb gbar"><div class="note">${s.phase==='arrange'?'🃏 Хөзрөө янзлах хугацаа':s.phase==='playing'?'Ээлж бүр '+TURN_MS/1000+' секунд':''}</div>
-    <button class="ghost sm" id="exitG">${screen==='local'?'Дуусгах':'🚪 Гарах'}</button></div>`;
+    <div class="row">${screen==='game'?`<button class="ghost sm" id="resyncG" title="Ширээг шинэчлэх">↻</button>`:''}<button class="ghost sm" id="exitG">${screen==='local'?'Дуусгах':'🚪 Гарах'}</button></div></div>`;
   html+=`<div class="opps">`;
   order.forEach(i=>{
     const p=s.seats[i], cnt=(s.hands[i]||[]).length, out=isOut(s,i), turn=s.phase==='playing'&&s.turn===i;
@@ -1644,7 +1675,7 @@ function bindGame(){
   const hd=$('#hand'); if(hd) setupHandDrag(hd);
   const sr=$('#sortRank'); if(sr) sr.onclick=()=>{ handOrder.sort((a,b)=>a-b); render(); };
   const su=$('#sortSuit'); if(su) su.onclick=()=>{ handOrder.sort((a,b)=>suit(a)-suit(b)||a-b); render(); };
-  const pb=$('#play'); if(pb) pb.onclick=()=>{const cards=[...selected]; message=''; tx(x=>doPlay(x,me,cards)).then(()=>{ if(!msgErr) selected.clear(); render(); });};
+  const pb=$('#play'); if(pb) pb.onclick=()=>{const hnow=(state.hands[me]||[]); const cards=[...selected].filter(c=>hnow.includes(c)); if(!cards.length){ selected.clear(); render(); return; } message=''; tx(x=>doPlay(x,me,cards)).then(()=>{ if(!msgErr) selected.clear(); render(); });};
   const ps=$('#pass'); if(ps) ps.onclick=()=>{message=''; selected.clear(); tx(x=>doPass(x,me));};
   const cl=$('#clear'); if(cl) cl.onclick=()=>{selected.clear(); message=''; render();};
   const ad=$('#arrDone'); if(ad) ad.onclick=()=>tx(x=>doArranged(x,myId));
@@ -1657,6 +1688,7 @@ function bindGame(){
     confirmBox((s.mode==='ranked'?'Тоглолтоос гарвал хожигдсонд тооцогдож 1 од алдана. ':'')+'Гарсны дараа таны хөзөр гартаа үлдэж, ээлж бүрт автоматаар өнжинө. Гарах уу?',leaveGame,'Гарах');
   };
   const ex=$('#exitG'); if(ex) ex.onclick=exitFn;
+  const rs=$('#resyncG'); if(rs) rs.onclick=()=>resync('Ширээ шинэчлэгдлээ.');
   const ex2=$('#exitG2'); if(ex2) ex2.onclick=exitFn;
   const th=$('#toHome'); if(th) th.onclick=()=>screen==='local'?endLocal():leaveGame();
   const as=$('#againSearch'); if(as) as.onclick=()=>{ const m=s.mode; goHome(); startSearch(m); };
