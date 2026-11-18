@@ -4,6 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Монгол 13 — хөзрийн тоглоом</title>
+<meta name="description" content="Монгол 13 хөзрийн тоглоом: найзуудтайгаа болон санамсаргүй хүмүүстэй онлайн тоглоно.">
+<meta name="theme-color" content="#0f5a3c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Монгол 13">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
   :root{
     --felt:#0f5a3c; --felt2:#0b4630; --ink:#f3efe3; --muted:#b9cdbf; --gold:#e8c46a;
@@ -178,6 +187,12 @@
   .vic{display:inline-block;font-size:13px;border-radius:999px;padding:0 4px;transition:box-shadow .15s,background .15s}
   .vic.connecting{opacity:.45}
   .vic.speaking{background:rgba(91,227,122,.35);box-shadow:0 0 0 2px #5be37a}
+
+  /* Гомдол / блок */
+  .cmore{background:transparent;color:var(--muted);border:none;padding:0 6px;font-size:16px;line-height:1;float:right;cursor:pointer}
+  .cmore:hover{color:var(--gold)}
+  .nm .cmore,.who .cmore{float:none;margin-left:4px;vertical-align:middle}
+  textarea.inp{resize:vertical}
 </style>
 </head>
 <body>
@@ -200,6 +215,8 @@ const firebaseConfig = {
   appId: "1:324019835823:web:25c3e6567a84fb7c79555a",
   measurementId: "G-V6PVXP10FB"
 };
+// Холбоо барих имэйл (заавал биш). Бичвэл нүүр хуудасны доор харагдана. Жишээ: "mongol13@gmail.com"
+const CONTACT_EMAIL = "";
 /* ===================================================================== */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, sendEmailVerification, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -650,7 +667,7 @@ async function ensureProfile(u,name){
       if(c.exists()) return false;
       t.set(cref,{uid:u.uid});
       t.set(ref,{name:(name||u.displayName||'Тоглогч').slice(0,16),code,rankPoints:0,games:0,wins:0,rGames:0,rWins:0,
-        friends:[],applied:[],createdAt:Date.now(),lastSeen:serverTimestamp()});
+        friends:[],blocked:[],applied:[],createdAt:Date.now()});
       return true;
     });
     if(ok) return;
@@ -659,10 +676,11 @@ async function ensureProfile(u,name){
 }
 async function syncClock(){
   try{
-    const ref=doc(fdb,'users',myId); const t0=Date.now();
-    await updateDoc(ref,{lastSeen:serverTimestamp()});
+    // Онлайн тэмдэглэлийг профайлаас тусад нь (presence) хадгална. Ингэснээр топ 10-ыг харж буй хүмүүст дахин уншигдахгүй.
+    const ref=doc(fdb,'presence',myId); const t0=Date.now();
+    await setDoc(ref,{ts:serverTimestamp()});
     const d=await getDoc(ref); const t1=Date.now();
-    const srv=tsMs(d.data().lastSeen); if(srv) clockOffset=srv-(t0+t1)/2;
+    const srv=tsMs(d.data().ts); if(srv) clockOffset=srv-(t0+t1)/2;
   }catch(e){ console.warn('clock',e); }
 }
 async function onLogin(u){
@@ -675,7 +693,8 @@ async function onLogin(u){
   unsubs.push(onSnapshot(collection(fdb,'users',myId,'invites'),snap=>{
     invites=snap.docs.map(d=>({id:d.id,...d.data()})).filter(x=>now()-(x.ts||0)<15*60000).sort((a,b)=>b.ts-a.ts);
     if(screen==='home') render(); }));
-  setInterval(()=>{ updateDoc(doc(fdb,'users',myId),{lastSeen:serverTimestamp()}).catch(()=>{}); },60000);
+  // 2 минут тутам, зөвхөн хуудас нээлттэй (харагдаж) байх үед
+  setInterval(()=>{ if(myId&&myId!=='me'&&document.visibilityState==='visible') setDoc(doc(fdb,'presence',myId),{ts:serverTimestamp()}).catch(()=>{}); },120000);
   const code=(location.hash||'').replace('#','').toUpperCase();
   if(code&&code.length===5) joinRoom(code); else { screen='home'; render(); }
 }
@@ -686,7 +705,7 @@ async function startSearch(mode){
   if(!profile) return;
   const qref=doc(fdb,'queue',myId);
   try{
-    await setDoc(qref,{uid:myId,name:profile.name,mode,p:profile.rankPoints||0,ts:now(),ping:now(),gameId:null});
+    await setDoc(qref,{uid:myId,name:profile.name,mode,p:profile.rankPoints||0,ts:now(),ping:now(),gameId:null,bl:(profile.blocked||[]).slice(0,200)});
   }catch(e){ console.error(e); homeMsg='Хайлт эхлүүлж чадсангүй.'; homeErr=true; render(); return; }
   search={mode,since:now(),count:1,busy:false,lastPing:now(),qref};
   screen='search'; render();
@@ -717,7 +736,10 @@ async function searchTick(){
     let others=list.filter(d=>d.uid!==myId);
     if(search.mode==='ranked'){ const win=3+Math.floor((t-meQ.ts)/15000)*3; others=others.filter(d=>Math.abs(d.p-meQ.p)<=win); }
     others.sort((a,b)=>Math.abs(a.p-meQ.p)-Math.abs(b.p-meQ.p)||a.ts-b.ts);
-    const pick=others.slice(0,3);
+    // Блоклосон / блоклогдсон хүмүүсийг нэг ширээнд суулгахгүй
+    const clash=(x,y)=>(x.bl||[]).includes(y.uid)||(y.bl||[]).includes(x.uid);
+    const pick=[];
+    for(const d of others){ if(pick.length>=3) break; if(clash(meQ,d)||pick.some(q=>clash(q,d))) continue; pick.push(d); }
     if(pick.length===3||(pick.length>=1&&t-meQ.ts>=60000)) await createMatch([meQ,...pick]);
   }catch(e){ if(String(e&&e.message)!=='taken') console.error(e); }
   finally{ if(search) search.busy=false; }
@@ -841,7 +863,10 @@ async function applyResults(force){
 /* ================== Найзууд ================== */
 async function loadFriends(){
   const ids=(profile&&profile.friends)||[];
-  await Promise.all(ids.map(async id=>{ try{ const d=await getDoc(doc(fdb,'users',id)); if(d.exists()) friendsCache[id]={id,...d.data()}; }catch(e){} }));
+  await Promise.all(ids.map(async id=>{ try{
+    const [d,pr]=await Promise.all([getDoc(doc(fdb,'users',id)),getDoc(doc(fdb,'presence',id))]);
+    if(d.exists()) friendsCache[id]={id,...d.data(),seen:pr.exists()?tsMs(pr.data().ts):0};
+  }catch(e){} }));
   friendsLoaded=true; render();
 }
 async function addFriend(code){
@@ -936,7 +961,7 @@ function startChat(id){
     fresh.forEach(m=>chatSeen.add(m.id));
     chatMsgs=msgs;
     if(!first){
-      const others=fresh.filter(m=>m.uid!==myId);
+      const others=fresh.filter(m=>m.uid!==myId&&!isBlocked(m.uid));
       if(others.length){ if(!chatOpen) chatUnread+=others.length; beep(990,.06,'sine',.04); }
       if(fresh.length){ render(); setTimeout(()=>render(),5200); }
     }
@@ -957,7 +982,7 @@ function recentMsg(uid){ // сүүлийн 5 секундэд бичсэн ме�
   for(let i=chatMsgs.length-1;i>=0;i--){ const m=chatMsgs[i]; if(m.uid===uid) return now()-(m.ts||0)<5000?m:null; }
   return null;
 }
-function bubble(uid){ const m=recentMsg(uid); return m?`<div class="bubble">${esc(cleanText(m.text))}</div>`:''; }
+function bubble(uid){ if(isBlocked(uid)) return ''; const m=recentMsg(uid); return m?`<div class="bubble">${esc(cleanText(m.text))}</div>`:''; }
 function renderChat(){
   const box=$('#chat');
   const show=screen==='game'&&!!chatFor&&!!state&&!['ready','loading'].includes(state.phase);
@@ -971,6 +996,7 @@ function renderChat(){
     $('#chatToggle').onclick=()=>{ chatOpen=!chatOpen; if(chatOpen) chatUnread=0; renderChat(); if(chatOpen) setTimeout(()=>{ const i=$('#chatInput'); i&&i.focus(); },50); };
     $('#chatForm').onsubmit=async e=>{ e.preventDefault(); const i=$('#chatInput'); if(await sendChat(i.value)) i.value=''; };
     box.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>sendChat(b.dataset.q));
+    $('#chatList').onclick=e=>{ const b=e.target.closest('[data-pm]'); if(!b) return; const m=chatMsgs.find(x=>x.id===b.dataset.pm); if(m) playerMenu(m.uid,m.name,m.text); };
   }
   box.className='chat '+(chatOpen?'open':'closed');
   const vb=$('#vbar');
@@ -984,7 +1010,8 @@ function renderChat(){
   const list=$('#chatList');
   if(list){
     const atBottom=list.scrollHeight-list.scrollTop-list.clientHeight<40;
-    list.innerHTML=chatMsgs.length?chatMsgs.map(m=>`<div class="cm ${m.uid===myId?'mine':''}"><b>${esc(m.name||'Тоглогч')}</b> ${topBadge(m.uid)}<span>${esc(cleanText(m.text))}</span></div>`).join('')
+    const vis=chatMsgs.filter(m=>!isBlocked(m.uid));
+    list.innerHTML=vis.length?vis.map(m=>`<div class="cm ${m.uid===myId?'mine':''}">${m.uid!==myId?`<button class="cmore" data-pm="${esc(m.id)}" title="Гомдол / блок">⋯</button>`:''}<b>${esc(m.name||'Тоглогч')}</b> ${topBadge(m.uid)}<span>${esc(cleanText(m.text))}</span></div>`).join('')
       :'<div class="note center">Одоогоор мессеж алга. Эхний мессежээ бичээрэй 👋</div>';
     if(atBottom||chatOpen) list.scrollTop=list.scrollHeight;
   }
@@ -1017,13 +1044,13 @@ async function joinVoice(){
     if(!voice||voice.gid!==gid) return;
     const peers={}; snap.docs.forEach(d=>{ const x=d.data(); peers[x.uid]=x; });
     voice.peers=peers;
-    Object.keys(voice.pcs).forEach(u=>{ if(!peers[u]) closePeer(u); });
-    Object.keys(peers).forEach(u=>{ if(u!==myId&&!voice.pcs[u]&&myId<u) callPeer(u); });   // бага id-тай нь залгана
+    Object.keys(voice.pcs).forEach(u=>{ if(!peers[u]||isBlocked(u)) closePeer(u); });
+    Object.keys(peers).forEach(u=>{ if(u!==myId&&!voice.pcs[u]&&myId<u&&!isBlocked(u)) callPeer(u); });   // бага id-тай нь залгана
     render();
   });
   voice.unsubIn=onSnapshot(query(collection(fdb,'games',gid,'voice'),where('callee','==',myId)),snap=>{
     if(!voice||voice.gid!==gid) return;
-    snap.docs.forEach(d=>{ const x=d.data(); if(!x.offer||!voice.peers[x.caller]) return;
+    snap.docs.forEach(d=>{ const x=d.data(); if(!x.offer||!voice.peers[x.caller]||isBlocked(x.caller)) return;
       const cur=voice.pcs[x.caller]; if(!cur||cur.sid!==x.sid) answerPeer(x.caller,d.id,x); });
   });
   voice.levelTimer=setInterval(levelTick,200);
@@ -1140,6 +1167,94 @@ function voiceBar(){
     <span class="vcount">${n} хүн</span><button class="vbtn off" id="vLeave" title="Дуут чатаас гарах">✕</button>`;
 }
 
+/* ================== Гомдол ба блок ================== */
+const REPORT_REASONS=['Хараал, доромжлол','Залилан, хуурч тоглосон','Зохисгүй нэр','Спам','Бусад'];
+let blockedCache={}, blockedLoaded=false;
+const isBlocked=uid=>!!(profile&&(profile.blocked||[]).includes(uid));
+
+function playerMenu(uid,name,msgText){
+  if(!uid||uid===myId||!profile||String(uid).startsWith('bot')) return;
+  const bl=isBlocked(uid);
+  const d=document.createElement('div'); d.className='overlay';
+  d.innerHTML=`<div class="panel narrow"><b>${esc(name||'Тоглогч')}</b>${msgText?`<div class="note" style="margin:6px 0">“${esc(cleanText(msgText))}”</div>`:''}
+    <div class="col" style="margin-top:10px">
+      <button class="ghost" id="pmRep">🚩 Гомдол гаргах</button>
+      <button class="${bl?'ghost':'danger'}" id="pmBlk">${bl?'✅ Блокоос гаргах':'🚫 Блоклох'}</button>
+      <button class="ghost" id="pmX">Болих</button></div>
+    <p class="note" style="margin-top:10px">Блоклосон хүний чат, дуу танд хүрэхгүй. Санамсаргүй тааруулалтаар тантай таарахгүй.</p></div>`;
+  document.body.appendChild(d);
+  d.querySelector('#pmX').onclick=()=>d.remove();
+  d.querySelector('#pmRep').onclick=()=>{ d.remove(); reportDialog(uid,name,msgText); };
+  d.querySelector('#pmBlk').onclick=()=>{ d.remove(); bl?unblockUser(uid):blockUser(uid,name); };
+}
+function reportDialog(uid,name,msgText){
+  const d=document.createElement('div'); d.className='overlay';
+  d.innerHTML=`<div class="panel narrow"><b>🚩 ${esc(name||'Тоглогч')}-д гомдол гаргах</b>
+    <div class="col" style="margin-top:10px">${REPORT_REASONS.map((r,i)=>`<label class="row note"><input type="radio" name="rr" value="${esc(r)}" ${i===0?'checked':''}> ${esc(r)}</label>`).join('')}
+    <textarea id="rNote" class="inp" maxlength="300" rows="3" placeholder="Нэмэлт тайлбар (заавал биш)"></textarea>
+    <label class="row note"><input type="checkbox" id="rBlock" checked> Мөн блоклох</label>
+    <div class="row"><button id="rSend">Илгээх</button><button class="ghost" id="rX">Болих</button></div></div></div>`;
+  document.body.appendChild(d);
+  d.querySelector('#rX').onclick=()=>d.remove();
+  d.querySelector('#rSend').onclick=async()=>{
+    const reason=(d.querySelector('input[name=rr]:checked')||{}).value||'Бусад';
+    const note=d.querySelector('#rNote').value.trim().slice(0,300), alsoBlock=d.querySelector('#rBlock').checked;
+    d.querySelector('#rSend').disabled=true;
+    try{
+      await addDoc(collection(fdb,'reports'),{from:myId,fromName:profile.name,target:uid,targetName:name||'',reason,note,
+        msg:msgText?String(msgText).slice(0,150):'',gameId:gameId||'',ts:now()});
+      toast('Гомдол илгээгдлээ. Баярлалаа!');
+      if(alsoBlock&&!isBlocked(uid)) await blockUser(uid,name,true);
+    }catch(e){ console.error(e); toast('Гомдол илгээж чадсангүй'); }
+    d.remove();
+  };
+}
+async function blockUser(uid,name,silent){
+  if((profile.blocked||[]).length>=200){ toast('Хамгийн ихдээ 200 хүн блоклож болно'); return; }
+  try{
+    await updateDoc(doc(fdb,'users',myId),{blocked:arrayUnion(uid),friends:arrayRemove(uid)});
+    blockedCache[uid]={id:uid,name:name||'Тоглогч'};
+    if(voice&&voice.pcs[uid]) closePeer(uid);
+    if(!silent) toast(`${name||'Тоглогч'} блоклогдлоо`);
+    render();
+  }catch(e){ console.error(e); toast('Блоклож чадсангүй'); }
+}
+async function unblockUser(uid){
+  try{ await updateDoc(doc(fdb,'users',myId),{blocked:arrayRemove(uid)}); delete blockedCache[uid]; toast('Блокоос гаргалаа'); render(); }
+  catch(e){ console.error(e); }
+}
+async function loadBlocked(){
+  const ids=(profile&&profile.blocked)||[];
+  await Promise.all(ids.filter(id=>!blockedCache[id]).map(async id=>{ try{ const s=await getDoc(doc(fdb,'users',id)); blockedCache[id]={id,name:s.exists()?s.data().name:'Тоглогч'}; }catch(e){} }));
+  blockedLoaded=true; render();
+}
+function blockedSection(){
+  const ids=(profile&&profile.blocked)||[];
+  if(!ids.length) return `<p class="note">Блоклосон хүн алга. Чатын мессеж эсвэл тоглогчийн нэрний хажууд байгаа ⋯ товчоор блоклоно.</p>`;
+  if(!blockedLoaded){ loadBlocked(); return `<p class="note">Ачаалж байна…</p>`; }
+  return `<div class="flist">${ids.map(id=>`<div class="frow"><div class="grow"><b>${esc((blockedCache[id]||{}).name||'Тоглогч')}</b></div><button class="ghost sm" data-unb="${id}">Блокоос гаргах</button></div>`).join('')}</div>`;
+}
+
+/* ================== Суулгах (PWA) ================== */
+let installEvt=null;
+const isStandalone=()=>window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+const isIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); installEvt=e; render(); });
+window.addEventListener('appinstalled',()=>{ installEvt=null; toast('Апп суулгагдлаа! 🎉'); render(); });
+if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')) navigator.serviceWorker.register('./sw.js').catch(e=>console.warn('sw',e));
+function installBanner(){
+  if(isStandalone()) return '';
+  let hidden=false; try{ hidden=localStorage.getItem('m13noinstall')==='1'; }catch(e){}
+  if(hidden) return '';
+  if(installEvt) return `<div class="invite">📲 Утсандаа апп шиг суулгаад нүүр дэлгэцээсээ шууд нээгээрэй.<span class="grow"></span><button id="instBtn">Суулгах</button><button class="ghost" id="instX">✕</button></div>`;
+  if(isIOS()) return `<div class="invite">📲 iPhone-д суулгах: Safari-ийн доод хэсгийн <b>Share (⬆️)</b> → <b>"Add to Home Screen" (Нүүр дэлгэцэнд нэмэх)</b>.<span class="grow"></span><button class="ghost" id="instX">✕</button></div>`;
+  return '';
+}
+function bindInstall(){
+  const b=$('#instBtn'); if(b) b.onclick=async()=>{ if(!installEvt) return; installEvt.prompt(); try{ await installEvt.userChoice; }catch(e){} installEvt=null; render(); };
+  const x=$('#instX'); if(x) x.onclick=()=>{ try{ localStorage.setItem('m13noinstall','1'); }catch(e){} render(); };
+}
+
 /* ================== Харагдац ================== */
 const BOTN=['🤖 Робот 1','🤖 Робот 2','🤖 Робот 3'];
 const MODE_MN={casual:'Энгийн',ranked:'Цолтой',friends:'Найзуудтай'};
@@ -1157,6 +1272,7 @@ function nameTag(seat){
   if(p.bot) return esc(nameOf(seat));
   return `${esc(nameOf(seat))} ${topBadge(p.id)} ${voiceIcon(p.id)}<div class="sub2">${rankChip((state.pts||{})[p.id]||0)}</div>`;
 }
+function contactLine(){ return CONTACT_EMAIL?`<p class="note center" style="margin-top:12px">Холбоо барих, санал хүсэлт: <b>${esc(CONTACT_EMAIL)}</b></p>`:''; }
 function scoreTxt(v){ v=v||0; return `<span class="${v>=20?'neg':''}">${v}/${LIMIT}</span>`; }
 function logText(e){
   if(e.t==='left') return `🚪 ${esc((state.names||{})[e.id]||'Тоглогч')} тоглолтоос гарлаа`;
@@ -1276,7 +1392,7 @@ function rankCard(p,big){
 }
 function homePlay(){
   const p=profile;
-  let h=`<div class="panel profsum"><div><div class="pname">${esc(p.name)} ${topBadge(myId)}</div><div class="note">ID: <b>${esc(p.code)}</b></div></div>${rankCard(p.rankPoints)}</div>`;
+  let h=installBanner()+`<div class="panel profsum"><div><div class="pname">${esc(p.name)} ${topBadge(myId)}</div><div class="note">ID: <b>${esc(p.code)}</b></div></div>${rankCard(p.rankPoints)}</div>`;
   if(p.activeGame) h+=`<div class="invite">⏳ Дуусаагүй тоглолт байна. Буцаж орохгүй бол таны ээлж бүрт цаг дуусч автоматаар өнжинө.<span class="grow"></span><button id="rejoin">Буцаж орох</button></div>`;
   invites.forEach(iv=>{ h+=`<div class="invite">📨 <b>${esc(iv.name)}</b> таныг өрөөндөө урьж байна <span class="grow"></span><button data-inv="${iv.id}" data-code="${esc(iv.code)}">Нэгдэх</button><button class="ghost" data-invx="${iv.id}">✕</button></div>`; });
   h+=`<div class="modes">
@@ -1287,7 +1403,7 @@ function homePlay(){
       <div class="row"><input id="roomCode" maxlength="5" placeholder="Өрөөний код" class="inp up" style="flex:1;margin:0"><button class="ghost" id="joinRoom">Нэгдэх</button></div></div>
   </div>
   <div class="row center"><button class="ghost" id="local">🤖 Роботуудтай дасгал</button></div>
-  <div class="panel" style="margin-top:10px">${RULES}</div>`;
+  <div class="panel" style="margin-top:10px">${RULES}</div>${contactLine()}`;
   return h;
 }
 function homeFriends(){
@@ -1298,7 +1414,7 @@ function homeFriends(){
   if(!ids.length) h+=`<p class="note">Одоогоор найз алга. Найзынхаа ID кодыг оруулж нэмээрэй.</p>`;
   else if(!friendsLoaded) h+=`<p class="note">Ачаалж байна…</p>`;
   else h+=`<div class="flist">${ids.map(id=>{ const f=friendsCache[id]; if(!f) return '';
-      const on=now()-tsMs(f.lastSeen)<150000;
+      const on=now()-(f.seen||0)<300000;
       return `<div class="frow"><span class="dot ${on?'on':''}" title="${on?'Онлайн':'Офлайн'}"></span><div class="grow"><b>${esc(f.name)}</b> ${topBadge(id)}<div class="sub2">${rankChip(f.rankPoints)} · ID ${esc(f.code)}</div></div><button class="ghost sm" data-rmf="${id}">Хасах</button></div>`; }).join('')}</div>`;
   return h+`</div>`;
 }
@@ -1320,7 +1436,8 @@ function homeProfile(){
     <div class="stats"><div><b>${p.games||0}</b><span>Нийт тоглолт</span></div><div><b>${p.wins||0}</b><span>Нийт хожил</span></div><div><b>${p.rWins||0}/${p.rGames||0}</b><span>Цолтой хожил</span></div><div><b>${wr}%</b><span>Хожлын хувь</span></div></div>
     ${u&&!u.emailVerified?`<div class="note" style="margin-top:10px">✉️ Имэйл баталгаажаагүй байна. <a href="#" id="verify" class="lnk">Баталгаажуулах имэйл дахин илгээх</a></div>`:''}
     <div class="row" style="margin-top:14px"><label class="row note"><input type="checkbox" id="snd" ${soundOn?'checked':''}> Дуу</label><span class="grow"></span><button class="danger" id="logout">Гарах</button></div>
-    <details style="margin-top:12px"><summary>Цолны шат</summary><div class="ladder">${TIERS.map(t=>`<div>${t.e} <b>${t.n}</b> III → II → I <span class="note">(тус бүр ${t.s} од)</span></div>`).join('')}<div>👑 <b>Аварга</b> <span class="note">(хязгааргүй од)</span></div></div></details></div>`;
+    <details style="margin-top:12px" ${(p.blocked||[]).length?'':''}><summary>🚫 Блоклосон хүмүүс (${(p.blocked||[]).length})</summary>${blockedSection()}</details>
+    <details style="margin-top:12px"><summary>Цолны шат</summary><div class="ladder">${TIERS.map(t=>`<div>${t.e} <b>${t.n}</b> III → II → I <span class="note">(тус бүр ${t.s} од)</span></div>`).join('')}<div>👑 <b>Аварга</b> <span class="note">(хязгааргүй од)</span></div></div></details></div>${contactLine()}`;
 }
 function bindHome(){
   document.querySelectorAll('[data-search]').forEach(b=>b.onclick=()=>{ homeMsg=''; startSearch(b.dataset.search); });
@@ -1343,6 +1460,8 @@ function bindHome(){
   };
   const vf=$('#verify'); if(vf) vf.onclick=async e=>{ e.preventDefault(); try{ await sendEmailVerification(auth.currentUser); toast('Имэйл илгээлээ'); }catch(err){ toast(authErr(err)); } };
   const sn=$('#snd'); if(sn) sn.onchange=()=>{ soundOn=sn.checked; try{localStorage.setItem('m13sound',soundOn?'1':'0');}catch(e){} };
+  bindInstall();
+  document.querySelectorAll('[data-unb]').forEach(b=>b.onclick=()=>unblockUser(b.dataset.unb));
   const lg=$('#logout'); if(lg) lg.onclick=()=>confirmBox('Бүртгэлээсээ гарах уу?',()=>signOut(auth),'Гарах');
 }
 
@@ -1371,7 +1490,7 @@ function renderLobby(){
   for(let i=0;i<4;i++){
     const p=s.seats[i];
     if(p){
-      html+=`<div class="seat filled">${p.bot?'':bubble(p.id)}<div class="who">${nameTag(i)}</div><div class="sub">${p.bot?'Компьютер':(p.id===s.hostId?'👑 Өрөөний эзэн':'Тоглогч')}</div>
+      html+=`<div class="seat filled">${p.bot?'':bubble(p.id)}<div class="who">${nameTag(i)}${!p.bot&&p.id!==myId?`<button class="cmore" data-pmu="${esc(p.id)}" data-pmn="${esc((s.names||{})[p.id]||'')}" title="Гомдол / блок">⋯</button>`:''}</div><div class="sub">${p.bot?'Компьютер':(p.id===s.hostId?'👑 Өрөөний эзэн':'Тоглогч')}</div>
       ${p.id===myId&&!host?`<button class="ghost sm" data-leave="${i}">Суудлаас босох</button>`
         :(p.bot&&(seated||host))?`<button class="ghost sm" data-leave="${i}">Робот хасах</button>`
         :(!p.bot&&host&&p.id!==myId)?`<button class="danger sm" data-leave="${i}">Хасах</button>`:''}</div>`;
@@ -1385,7 +1504,7 @@ function renderLobby(){
   const fids=(profile&&profile.friends)||[];
   if(fids.length){
     html+=`<div class="panel"><b>Найзаа урих</b><div class="flist">${fids.map(id=>{ const f=friendsCache[id]; if(!f) return '';
-      const on=now()-tsMs(f.lastSeen)<150000; const inRoom=s.seats.some(x=>x&&x.id===id);
+      const on=now()-(f.seen||0)<300000; const inRoom=s.seats.some(x=>x&&x.id===id);
       return `<div class="frow"><span class="dot ${on?'on':''}"></span><div class="grow"><b>${esc(f.name)}</b><div class="sub2">${rankChip(f.rankPoints)}</div></div>${inRoom?'<span class="note">Өрөөнд байна</span>':`<button class="ghost sm" data-invite="${id}">Урих</button>`}</div>`; }).join('')}</div></div>`;
     if(!friendsLoaded) loadFriends();
   }
@@ -1407,6 +1526,7 @@ function renderLobby(){
   $('#copyLink').onclick=async e=>{ const url=location.origin+location.pathname+'#'+gameId; try{ await navigator.clipboard.writeText(url); e.target.textContent='Хуулагдлаа ✓'; }catch(_){ e.target.textContent=url; } };
   $('#leaveRoom').onclick=async()=>{ if(seated) await tx(x=>doLeave(x,myId)); goHome(); };
 }
+document.addEventListener('click',e=>{ const b=e.target.closest('[data-pmu]'); if(b){ e.stopPropagation(); playerMenu(b.dataset.pmu,b.dataset.pmn); } });
 function isHost(){ return screen==='local'||(!!state&&state.hostId===myId); }
 
 /* ---------- Тоглоомын ширээ ---------- */
@@ -1422,7 +1542,7 @@ function renderGame(){
     const p=s.seats[i], cnt=(s.hands[i]||[]).length, out=isOut(s,i), turn=s.phase==='playing'&&s.turn===i;
     const arrDone=s.phase==='arrange'&&(isBotSeat(s,i)||(s.arranged||[]).includes(p.id));
     html+=`<div class="opp ${turn?'turn':''} ${s.passed.includes(i)||out?'passed':''}">${p.bot?'':bubble(p.id)}
-      <div class="nm">${nameTag(i)}</div>
+      <div class="nm">${nameTag(i)}${!p.bot&&p.id!==myId&&screen==='game'?`<button class="cmore" data-pmu="${esc(p.id)}" data-pmn="${esc((state.names||{})[p.id]||'')}" title="Гомдол / блок">⋯</button>`:''}</div>
       <div class="backs">${out?'<span class="note">❌ хасагдсан</span>':Array(Math.min(cnt,13)).fill('<div class="back"></div>').join('')}</div>
       <div class="cnt">${out?'':cnt+' хөзөр · '}${scoreTxt(s.scores[p.id])} оноо${s.passed.includes(i)?' · өнжсөн':''}${s.phase==='arrange'&&!out?(arrDone?' · ✓ бэлэн':' · янзалж байна…'):''}</div>
       ${turn?tbar(s.deadline,TURN_MS):''}</div>`;
@@ -1561,6 +1681,7 @@ else{
   }catch(e){ console.error(e); screen='error'; render(); }
 }
 window.addEventListener('beforeunload',()=>{ if(search) deleteDoc(search.qref).catch(()=>{}); leaveVoice(); });
+
 </script>
 </body>
 </html>
