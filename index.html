@@ -149,6 +149,35 @@
   .gbar{margin-bottom:-4px}
   .opp .nm{white-space:normal}
   .overlay .panel{max-height:92vh;overflow:auto}
+
+  /* Чат */
+  .chat{position:fixed;right:14px;bottom:14px;z-index:50;width:320px;max-width:calc(100vw - 28px);display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+  .chathead{background:var(--gold);color:#2a2207;border-radius:999px;padding:10px 16px;box-shadow:0 6px 16px rgba(0,0,0,.4);position:relative}
+  .chathead .badge{display:none;background:#e53935;color:#fff;border-radius:999px;font-size:12px;padding:1px 7px;margin-left:4px}
+  .chat.closed .chatbody{display:none}
+  .chatbody{width:100%;background:#0f3d2a;border:1px solid rgba(232,196,106,.35);border-radius:14px;padding:10px;box-shadow:0 10px 28px rgba(0,0,0,.5);display:flex;flex-direction:column;gap:8px}
+  .chatlist{max-height:260px;min-height:120px;overflow:auto;display:flex;flex-direction:column;gap:6px;font-size:14px}
+  .cm{background:rgba(0,0,0,.22);border-radius:10px;padding:6px 9px;word-break:break-word}
+  .cm b{color:var(--gold);font-size:12px;display:block}
+  .cm.mine{background:rgba(232,196,106,.14);align-self:flex-end;max-width:90%}
+  .quick{display:flex;flex-wrap:wrap;gap:4px}
+  #chatForm{flex-wrap:nowrap}#chatForm .inp{margin:0;flex:1;padding:8px 10px}
+  .bubble{position:relative;background:#fffdf7;color:#1b1b1b;border-radius:12px;padding:5px 10px;font-size:13px;font-weight:600;margin:-4px auto 6px;max-width:200px;word-break:break-word;box-shadow:0 3px 8px rgba(0,0,0,.35);animation:pop .2s ease-out}
+  .bubble:after{content:'';position:absolute;left:50%;bottom:-6px;margin-left:-6px;border:6px solid transparent;border-top-color:#fffdf7;border-bottom:0}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  @media (max-width:520px){ .chat{right:8px;bottom:8px} .chat.open{left:8px;width:auto} .wrap{padding-bottom:70px} }
+
+  /* Дуут чат */
+  .vbar{display:flex;gap:6px;align-items:center;justify-content:flex-end}
+  .vbtn{background:rgba(15,61,42,.95);color:var(--ink);border:1px solid rgba(232,196,106,.5);border-radius:999px;padding:8px 14px;font-size:14px;box-shadow:0 6px 16px rgba(0,0,0,.35)}
+  .vbtn.on{background:#1f7a4d;border-color:#5be37a}
+  .vbtn.on.muted{background:#5a2a2a;border-color:#e57373}
+  .vbtn.off{padding:8px 11px;color:#ffb4a8}
+  .vbtn.speaking{box-shadow:0 0 0 3px #5be37a,0 6px 16px rgba(0,0,0,.35)}
+  .vcount{font-size:12px;color:var(--ink);background:rgba(0,0,0,.45);border-radius:999px;padding:3px 8px}
+  .vic{display:inline-block;font-size:13px;border-radius:999px;padding:0 4px;transition:box-shadow .15s,background .15s}
+  .vic.connecting{opacity:.45}
+  .vic.speaking{background:rgba(91,227,122,.35);box-shadow:0 0 0 2px #5be37a}
 </style>
 </head>
 <body>
@@ -156,6 +185,8 @@
   <header id="hdr"></header>
   <div id="main"></div>
 </div>
+<div id="chat"></div>
+<div id="audios" hidden></div>
 <script type="module">
 /* =====================================================================
    ⚙️  FIREBASE ТОХИРГОО — Firebase консолоос авсан утгуудаа энд хуулна
@@ -459,6 +490,7 @@ const RULES=`<details><summary>Дүрэм</summary><ul>
 <li>Нийт оноо ${LIMIT} ба түүнээс дээш болсон хүн хасагдаж, цааш харж сууна. Хамгийн сүүлд үлдсэн хүн тоглолтод хожно.</li>
 <li>Ээлж бүр 10 секунд. Цаг дуусвал автоматаар өнжинө. Шинэ тойрог эхлүүлэх хүн өнжвөл эхлүүлэх эрх дараагийн хүнд шилжинэ.</li>
 <li>Тоглолтоос гарсан хүний хөзөр гартаа үлдэж, ээлж нь автоматаар өнжинө. Цолтой горимд робот оролцохгүй.</li>
+<li>🎙️ Дуут чат: тоглолтын үеэр баруун доод буланд байгаа "Дуут чат" товчийг дарж микрофоноо асаана.</li>
 </ul></details>`;
 
 /* ===== Гарын хөзрийн дараалал, чирэх ===== */
@@ -739,6 +771,7 @@ function openGame(id){
   gameId=id; gameRef=doc(fdb,'games',id); screen='game'; state=null; selected.clear(); message='';
   if(id.length===5) location.hash=id;
   else if(myId&&myId!=='me'&&(!profile||profile.activeGame!==id)) updateDoc(doc(fdb,'users',myId),{activeGame:id}).catch(()=>{});
+  startChat(id);
   render();
   unsubGame=onSnapshot(gameRef,snap=>{
     if(!snap.exists()){ toast('Тоглоом олдсонгүй'); if(profile&&profile.activeGame===id) updateDoc(doc(fdb,'users',myId),{activeGame:null}).catch(()=>{}); goHome(); return; }
@@ -750,7 +783,7 @@ function openGame(id){
     afterState(); render();
   },err=>{ console.error(err); toast('Холболт тасарлаа'); });
 }
-function closeGame(){ if(unsubGame){ try{unsubGame();}catch(e){} unsubGame=null; } gameRef=null; gameId=null; state=null; lastActV=-1; }
+function closeGame(){ leaveVoice(); stopChat(); if(unsubGame){ try{unsubGame();}catch(e){} unsubGame=null; } gameRef=null; gameId=null; state=null; lastActV=-1; }
 function goHome(){
   if(state&&gameId&&profile&&profile.activeGame===gameId&&['cancelled','abandoned','over'].includes(state.phase)) updateDoc(doc(fdb,'users',myId),{activeGame:null}).catch(()=>{});
   closeGame(); stopSearch(); if(location.hash) history.replaceState(null,'',location.pathname); screen=myId&&myId!=='me'?'home':(CONFIG_OK?'auth':'config'); render(); }
@@ -871,6 +904,242 @@ function updateTimers(){
 }
 setInterval(tick,300);
 
+/* ================== Хараалын шүүлтүүр ==================
+   Шинэ үг нэмэх бол доорх жагсаалтад жижиг үсгээр нэмнэ.
+   BAD_ROOTS — тухайн үгээр ЭХЭЛСЭН бүх үгийг нууна (новш → новшийн, новшоо ...)
+   BAD_WORDS — зөвхөн яг тэр үгийг нууна (бусад энгийн үгийн эхэнд таарч болох богино үгс)
+   BAD_PHRASES — хэллэг (зайтай)                                                   */
+const BAD_ROOTS=['новш','гичий','янхан','пизд','пийз','бляд','блят','ебан','ебат','ебал','ебл','ёбан','ёбо','ёбт','шодой','пидар','пидор','педик','сволоч','мангуу',
+  'novsh','gichii','gichiin','yanhan','pizd','blyad','blyat','blya','eban','ebat','yoban','shodoi','pidar','pidor','fuck','bitch','shit','motherf'];
+const BAD_WORDS=['хуй','хуйн','хуйг','хуйга','хуйгаа','сука','сукаа','ёб','еб','бля','huy','hui','huin','suka','yob','ass','dick'];
+const BAD_PHRASES=[/(ээж|аав)[а-яөүё]*\s+чин[ьи]?/giu,/(eej|aav)[a-z]*\s+chin/giu];
+const squash=w=>w.toLowerCase().replace(/(.)\1+/gu,'$1');
+const ROOTS_N=BAD_ROOTS.map(squash), WORDS_N=new Set(BAD_WORDS.map(squash));
+function cleanText(t){
+  t=String(t||'');
+  BAD_PHRASES.forEach(re=>{ t=t.replace(re,m=>m.replace(/\S/gu,'•')); });
+  return t.replace(/[\p{L}]+/gu,w=>{
+    const n=squash(w);
+    return (WORDS_N.has(n)||ROOTS_N.some(r=>n.startsWith(r)))?'•'.repeat(w.length):w;
+  });
+}
+
+/* ================== Чат ================== */
+let chatMsgs=[], chatUnsub=null, chatOpen=false, chatUnread=0, lastSent=0, chatFor=null, chatSeen=new Set();
+const QUICK=['👍','😂','Сайн тоглолт!','Хурдлаарай 😅','Өө харамсалтай','GG'];
+function startChat(id){
+  stopChat(); chatFor=id; chatMsgs=[]; chatUnread=0; chatSeen=new Set();
+  let first=true;
+  chatUnsub=onSnapshot(query(collection(fdb,'games',id,'chat'),orderBy('ts','desc'),limit(40)),snap=>{
+    const msgs=snap.docs.map(d=>({id:d.id,...d.data()})).reverse();
+    const fresh=msgs.filter(m=>!chatSeen.has(m.id));
+    fresh.forEach(m=>chatSeen.add(m.id));
+    chatMsgs=msgs;
+    if(!first){
+      const others=fresh.filter(m=>m.uid!==myId);
+      if(others.length){ if(!chatOpen) chatUnread+=others.length; beep(990,.06,'sine',.04); }
+      if(fresh.length){ render(); setTimeout(()=>render(),5200); }
+    }
+    first=false; renderChat();
+  },err=>console.warn('chat',err));
+  renderChat();
+}
+function stopChat(){ if(chatUnsub){ try{chatUnsub();}catch(e){} chatUnsub=null; } chatFor=null; chatMsgs=[]; renderChat(); }
+async function sendChat(text){
+  text=String(text||'').trim().slice(0,150);
+  if(!text||!chatFor||!profile) return false;
+  if(Date.now()-lastSent<1200){ toast('Хэт хурдан бичиж байна'); return false; }
+  lastSent=Date.now();
+  try{ await addDoc(collection(fdb,'games',chatFor,'chat'),{uid:myId,name:profile.name,text:cleanText(text),ts:now()}); return true; }
+  catch(e){ console.error(e); toast('Мессеж илгээж чадсангүй'); return false; }
+}
+function recentMsg(uid){ // сүүлийн 5 секундэд бичсэн мессеж (тоглогчийн дээр бөмбөлөг болгож харуулна)
+  for(let i=chatMsgs.length-1;i>=0;i--){ const m=chatMsgs[i]; if(m.uid===uid) return now()-(m.ts||0)<5000?m:null; }
+  return null;
+}
+function bubble(uid){ const m=recentMsg(uid); return m?`<div class="bubble">${esc(cleanText(m.text))}</div>`:''; }
+function renderChat(){
+  const box=$('#chat');
+  const show=screen==='game'&&!!chatFor&&!!state&&!['ready','loading'].includes(state.phase);
+  if(!show){ box.innerHTML=''; box.className=''; box.dataset.for=''; return; }
+  if(box.dataset.for!==chatFor){
+    box.dataset.for=chatFor;
+    box.innerHTML=`<div class="vbar" id="vbar"></div><button class="chathead" id="chatToggle">💬 Чат <span class="badge" id="chatBadge"></span></button>
+      <div class="chatbody"><div class="chatlist" id="chatList"></div>
+        <div class="quick">${QUICK.map(q=>`<button class="ghost xs" data-q="${esc(q)}">${esc(q)}</button>`).join('')}</div>
+        <form id="chatForm" class="row"><input id="chatInput" class="inp" maxlength="150" placeholder="Мессеж бичих…" autocomplete="off"><button type="submit" class="sm">➤</button></form></div>`;
+    $('#chatToggle').onclick=()=>{ chatOpen=!chatOpen; if(chatOpen) chatUnread=0; renderChat(); if(chatOpen) setTimeout(()=>{ const i=$('#chatInput'); i&&i.focus(); },50); };
+    $('#chatForm').onsubmit=async e=>{ e.preventDefault(); const i=$('#chatInput'); if(await sendChat(i.value)) i.value=''; };
+    box.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>sendChat(b.dataset.q));
+  }
+  box.className='chat '+(chatOpen?'open':'closed');
+  const vb=$('#vbar');
+  if(vb){
+    vb.innerHTML=voiceBar();
+    const j=$('#vJoin'); if(j) j.onclick=()=>{ j.disabled=true; j.textContent='Холбогдож байна…'; joinVoice(); };
+    const m=$('#vMute'); if(m) m.onclick=toggleMute;
+    const l=$('#vLeave'); if(l) l.onclick=leaveVoice;
+  }
+  const bd=$('#chatBadge'); bd.textContent=chatUnread?chatUnread:''; bd.style.display=chatUnread?'inline-block':'none';
+  const list=$('#chatList');
+  if(list){
+    const atBottom=list.scrollHeight-list.scrollTop-list.clientHeight<40;
+    list.innerHTML=chatMsgs.length?chatMsgs.map(m=>`<div class="cm ${m.uid===myId?'mine':''}"><b>${esc(m.name||'Тоглогч')}</b> ${topBadge(m.uid)}<span>${esc(cleanText(m.text))}</span></div>`).join('')
+      :'<div class="note center">Одоогоор мессеж алга. Эхний мессежээ бичээрэй 👋</div>';
+    if(atBottom||chatOpen) list.scrollTop=list.scrollHeight;
+  }
+}
+
+/* ================== Дуут чат (WebRTC) ==================
+   Дуу нь тоглогчдын хооронд шууд дамжина. Firebase зөвхөн холболт эхлүүлэхэд хэрэглэгдэнэ.
+   Зарим сүлжээнд (гар утасны дата, ажлын сүлжээ) шууд холбогдож чадахгүй тохиолдол бий.
+   Тэр үед TURN сервер нэмбэл бүрэн ажиллана (README-г үз).                              */
+const ICE_SERVERS=[
+  {urls:['stun:stun.l.google.com:19302','stun:stun1.l.google.com:19302']},
+  // TURN сервер нэмэх бол энэ мөрийн өмнөх // -г арилгаад утгаа бичнэ:
+  // {urls:'turn:ТАНЫ-TURN-ХАЯГ:3478',username:'НЭР',credential:'НУУЦ-ҮГ'},
+];
+let voice=null, vctx=null;
+const pairId=(a,b)=>a<b?a+'_'+b:b+'_'+a;
+
+async function joinVoice(){
+  if(voice||!gameId||screen!=='game'||!profile) return;
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){ toast('Энэ хөтөч микрофон дэмжихгүй байна'); return; }
+  let stream;
+  try{ stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}}); }
+  catch(e){ console.warn(e); toast('Микрофоны зөвшөөрөл өгөөгүй байна. Хөтчийн тохиргооноос зөвшөөрнө үү.'); return; }
+  const gid=gameId;
+  voice={gid,stream,pcs:{},peers:{},muted:false,analysers:{}};
+  addAnalyser(myId,stream);
+  try{ await setDoc(doc(fdb,'games',gid,'voicePeers',myId),{uid:myId,name:profile.name,muted:false,ts:now()}); }
+  catch(e){ console.error(e); toast('Дуут чатад нэгдэж чадсангүй'); leaveVoice(); return; }
+  voice.unsubPeers=onSnapshot(collection(fdb,'games',gid,'voicePeers'),snap=>{
+    if(!voice||voice.gid!==gid) return;
+    const peers={}; snap.docs.forEach(d=>{ const x=d.data(); peers[x.uid]=x; });
+    voice.peers=peers;
+    Object.keys(voice.pcs).forEach(u=>{ if(!peers[u]) closePeer(u); });
+    Object.keys(peers).forEach(u=>{ if(u!==myId&&!voice.pcs[u]&&myId<u) callPeer(u); });   // бага id-тай нь залгана
+    render();
+  });
+  voice.unsubIn=onSnapshot(query(collection(fdb,'games',gid,'voice'),where('callee','==',myId)),snap=>{
+    if(!voice||voice.gid!==gid) return;
+    snap.docs.forEach(d=>{ const x=d.data(); if(!x.offer||!voice.peers[x.caller]) return;
+      const cur=voice.pcs[x.caller]; if(!cur||cur.sid!==x.sid) answerPeer(x.caller,d.id,x); });
+  });
+  voice.levelTimer=setInterval(levelTick,200);
+  beep(660,.08); render();
+}
+function newPC(uid){
+  const pc=new RTCPeerConnection({iceServers:ICE_SERVERS});
+  voice.stream.getTracks().forEach(t=>pc.addTrack(t,voice.stream));
+  pc.ontrack=e=>{
+    const s=e.streams[0]; let a=document.getElementById('aud_'+uid);
+    if(!a){ a=document.createElement('audio'); a.id='aud_'+uid; a.autoplay=true; a.setAttribute('playsinline',''); $('#audios').appendChild(a); }
+    a.srcObject=s; a.play().catch(()=>{}); addAnalyser(uid,s);
+  };
+  pc.onconnectionstatechange=()=>{
+    const ent=voice&&voice.pcs[uid]; if(!ent||ent.pc!==pc) return;
+    if(pc.connectionState==='failed'&&ent.role==='caller'){        // дахин оролдоно
+      closePeer(uid); setTimeout(()=>{ if(voice&&voice.peers[uid]&&!voice.pcs[uid]) callPeer(uid); },2000);
+    }
+    render();
+  };
+  return pc;
+}
+async function callPeer(uid){
+  const sid=Math.random().toString(36).slice(2,10), gid=voice.gid;
+  const pc=newPC(uid), ref=doc(fdb,'games',gid,'voice',pairId(myId,uid));
+  const ent={pc,sid,role:'caller',added:new Set(),q:[],ready:false,ref}; voice.pcs[uid]=ent;
+  pc.onicecandidate=e=>{ if(!e.candidate) return; const c=JSON.stringify(e.candidate.toJSON());
+    if(ent.ready) updateDoc(ref,{callerC:arrayUnion(c)}).catch(()=>{}); else ent.q.push(c); };
+  try{
+    const offer=await pc.createOffer(); await pc.setLocalDescription(offer);
+    await setDoc(ref,{caller:myId,callee:uid,sid,offer:{type:offer.type,sdp:offer.sdp},answer:null,callerC:ent.q.splice(0),calleeC:[],ts:now()});
+    ent.ready=true; if(ent.q.length) updateDoc(ref,{callerC:arrayUnion(...ent.q.splice(0))}).catch(()=>{});
+  }catch(e){ console.warn(e); return; }
+  const flush=()=>{ (ent.lastC||[]).forEach(c=>{ if(!ent.added.has(c)){ ent.added.add(c); pc.addIceCandidate(JSON.parse(c)).catch(()=>{}); } }); };
+  ent.unsub=onSnapshot(ref,async snap=>{
+    const x=snap.data(); if(!x||x.sid!==sid||!voice||voice.pcs[uid]!==ent) return;
+    ent.lastC=x.calleeC||[];
+    if(x.answer&&!pc.currentRemoteDescription&&!ent.setting){
+      ent.setting=true;
+      try{ await pc.setRemoteDescription(x.answer); }catch(e){ console.warn(e); }
+      ent.setting=false;
+    }
+    if(pc.currentRemoteDescription) flush();   // хариу ирэх үеэр хүлээгдсэн замуудыг ч нэмнэ
+  });
+}
+async function answerPeer(caller,docId,x){
+  if(voice.pcs[caller]) closePeer(caller);
+  const ref=doc(fdb,'games',voice.gid,'voice',docId), pc=newPC(caller);
+  const ent={pc,sid:x.sid,role:'callee',added:new Set(),ref}; voice.pcs[caller]=ent;
+  pc.onicecandidate=e=>{ if(e.candidate) updateDoc(ref,{calleeC:arrayUnion(JSON.stringify(e.candidate.toJSON()))}).catch(()=>{}); };
+  try{
+    await pc.setRemoteDescription(x.offer);
+    const ans=await pc.createAnswer(); await pc.setLocalDescription(ans);
+    if(voice.pcs[caller]!==ent) return;
+    await updateDoc(ref,{answer:{type:ans.type,sdp:ans.sdp}});
+  }catch(e){ console.warn(e); return; }
+  ent.unsub=onSnapshot(ref,snap=>{
+    const y=snap.data(); if(!y||y.sid!==ent.sid||!voice||voice.pcs[caller]!==ent) return;
+    (y.callerC||[]).forEach(c=>{ if(!ent.added.has(c)){ ent.added.add(c); pc.addIceCandidate(JSON.parse(c)).catch(()=>{}); } });
+  });
+}
+function closePeer(uid){
+  const ent=voice&&voice.pcs[uid]; if(!ent) return;
+  try{ ent.unsub&&ent.unsub(); }catch(e){}
+  try{ ent.pc.close(); }catch(e){}
+  const a=document.getElementById('aud_'+uid); if(a){ a.srcObject=null; a.remove(); }
+  delete voice.analysers[uid]; delete voice.pcs[uid];
+}
+function leaveVoice(){
+  if(!voice) return;
+  const v=voice;
+  Object.keys(v.pcs).forEach(u=>{ const ent=v.pcs[u]; if(ent.role==='caller') deleteDoc(ent.ref).catch(()=>{}); closePeer(u); });
+  try{ v.unsubPeers&&v.unsubPeers(); v.unsubIn&&v.unsubIn(); }catch(e){}
+  clearInterval(v.levelTimer);
+  v.stream.getTracks().forEach(t=>t.stop());
+  deleteDoc(doc(fdb,'games',v.gid,'voicePeers',myId)).catch(()=>{});
+  voice=null; render();
+}
+function toggleMute(){
+  if(!voice) return;
+  voice.muted=!voice.muted;
+  voice.stream.getAudioTracks().forEach(t=>t.enabled=!voice.muted);
+  updateDoc(doc(fdb,'games',voice.gid,'voicePeers',myId),{muted:voice.muted}).catch(()=>{});
+  render();
+}
+function addAnalyser(uid,stream){
+  try{
+    vctx=vctx||new (window.AudioContext||window.webkitAudioContext)();
+    if(vctx.state==='suspended') vctx.resume();
+    const an=vctx.createAnalyser(); an.fftSize=512;
+    vctx.createMediaStreamSource(stream).connect(an);
+    voice.analysers[uid]={an,buf:new Uint8Array(an.fftSize)};
+  }catch(e){}
+}
+function levelTick(){
+  if(!voice) return;
+  for(const [uid,a] of Object.entries(voice.analysers)){
+    a.an.getByteTimeDomainData(a.buf); let m=0; for(const v of a.buf){ const d=Math.abs(v-128); if(d>m) m=d; }
+    const muted=uid===myId?voice.muted:!!(voice.peers[uid]&&voice.peers[uid].muted);
+    const sp=m>10&&!muted;
+    document.querySelectorAll(`[data-vuid="${uid}"]`).forEach(el=>el.classList.toggle('speaking',sp));
+  }
+}
+function voiceIcon(uid){
+  if(!voice||!voice.peers[uid]) return '';
+  const p=voice.peers[uid], ent=voice.pcs[uid];
+  const st=uid===myId?'':(ent&&ent.pc.connectionState==='connected'?'':' connecting');
+  return `<span class="vic${st}" data-vuid="${uid}" title="${p.muted?'Микрофон хаалттай':'Дуут чатад байна'}">${p.muted?'🔇':'🎙️'}</span>`;
+}
+function voiceBar(){
+  if(!voice) return `<button class="vbtn" id="vJoin">🎙️ Дуут чат</button>`;
+  const n=Object.keys(voice.peers).length;
+  return `<button class="vbtn on ${voice.muted?'muted':''}" id="vMute" data-vuid="${myId}">${voice.muted?'🔇 Дуу хаалттай':'🎤 Ярьж байна'}</button>
+    <span class="vcount">${n} хүн</span><button class="vbtn off" id="vLeave" title="Дуут чатаас гарах">✕</button>`;
+}
+
 /* ================== Харагдац ================== */
 const BOTN=['🤖 Робот 1','🤖 Робот 2','🤖 Робот 3'];
 const MODE_MN={casual:'Энгийн',ranked:'Цолтой',friends:'Найзуудтай'};
@@ -886,7 +1155,7 @@ function nameOf(seat){
 function nameTag(seat){
   const p=state.seats[seat]; if(!p) return '—';
   if(p.bot) return esc(nameOf(seat));
-  return `${esc(nameOf(seat))} ${topBadge(p.id)}<div class="sub2">${rankChip((state.pts||{})[p.id]||0)}</div>`;
+  return `${esc(nameOf(seat))} ${topBadge(p.id)} ${voiceIcon(p.id)}<div class="sub2">${rankChip((state.pts||{})[p.id]||0)}</div>`;
 }
 function scoreTxt(v){ v=v||0; return `<span class="${v>=20?'neg':''}">${v}/${LIMIT}</span>`; }
 function logText(e){
@@ -916,6 +1185,7 @@ function confirmBox(text,ok,yes='Тийм'){
 function render(){
   if(dragging){ pendingRender=true; return; }
   renderHeader();
+  renderChat();
   const m=$('#main');
   if(screen==='loading'){ m.innerHTML=`<div class="panel center note">Ачаалж байна…</div>`; return; }
   if(screen==='config') return renderConfig();
@@ -1101,7 +1371,7 @@ function renderLobby(){
   for(let i=0;i<4;i++){
     const p=s.seats[i];
     if(p){
-      html+=`<div class="seat filled"><div class="who">${nameTag(i)}</div><div class="sub">${p.bot?'Компьютер':(p.id===s.hostId?'👑 Өрөөний эзэн':'Тоглогч')}</div>
+      html+=`<div class="seat filled">${p.bot?'':bubble(p.id)}<div class="who">${nameTag(i)}</div><div class="sub">${p.bot?'Компьютер':(p.id===s.hostId?'👑 Өрөөний эзэн':'Тоглогч')}</div>
       ${p.id===myId&&!host?`<button class="ghost sm" data-leave="${i}">Суудлаас босох</button>`
         :(p.bot&&(seated||host))?`<button class="ghost sm" data-leave="${i}">Робот хасах</button>`
         :(!p.bot&&host&&p.id!==myId)?`<button class="danger sm" data-leave="${i}">Хасах</button>`:''}</div>`;
@@ -1151,7 +1421,7 @@ function renderGame(){
   order.forEach(i=>{
     const p=s.seats[i], cnt=(s.hands[i]||[]).length, out=isOut(s,i), turn=s.phase==='playing'&&s.turn===i;
     const arrDone=s.phase==='arrange'&&(isBotSeat(s,i)||(s.arranged||[]).includes(p.id));
-    html+=`<div class="opp ${turn?'turn':''} ${s.passed.includes(i)||out?'passed':''}">
+    html+=`<div class="opp ${turn?'turn':''} ${s.passed.includes(i)||out?'passed':''}">${p.bot?'':bubble(p.id)}
       <div class="nm">${nameTag(i)}</div>
       <div class="backs">${out?'<span class="note">❌ хасагдсан</span>':Array(Math.min(cnt,13)).fill('<div class="back"></div>').join('')}</div>
       <div class="cnt">${out?'':cnt+' хөзөр · '}${scoreTxt(s.scores[p.id])} оноо${s.passed.includes(i)?' · өнжсөн':''}${s.phase==='arrange'&&!out?(arrDone?' · ✓ бэлэн':' · янзалж байна…'):''}</div>
@@ -1179,7 +1449,7 @@ function renderGame(){
     let hint='';
     if(sel.length) hint=cb?(TYPE_MN[cb.type]+(s.table&&!beats(cb,s.table)?' — дарахгүй':'')):'Буруу хослол';
     html+=`<div class="panel me ${myTurn?'turn':''}">
-      <div class="mebar"><div><b>${esc(nameOf(me))}</b> ${topBadge(myId)} <span class="note">· ${hand.length} хөзөр · ${scoreTxt(s.scores[myId])} оноо</span></div>
+      <div class="mebar"><div><b>${esc(nameOf(me))}</b> ${topBadge(myId)} ${voiceIcon(myId)} <span class="note">· ${hand.length} хөзөр · ${scoreTxt(s.scores[myId])} оноо</span></div>
       <div class="note">${myTurn?`<span class="gold b">Таны ээлж! ${tsec(s.deadline)} сек</span>`:arr?(iArr?'✓ Бэлэн. Бусдыг хүлээж байна…':`<span class="gold b">Янзлах: ${tsec(s.deadline,1)}</span>`):(s.phase==='playing'?esc(nameOf(s.turn))+'-ийн ээлж…':'')}</div></div>
       ${myTurn?tbar(s.deadline,TURN_MS):arr?tbar(s.deadline,ARRANGE_MS):''}
       <div class="hand" id="hand">${hand.map(c=>cardHTML(c,selected.has(c)?'sel':'')).join('')}</div>
@@ -1290,7 +1560,7 @@ else{
     });
   }catch(e){ console.error(e); screen='error'; render(); }
 }
-window.addEventListener('beforeunload',()=>{ if(search) deleteDoc(search.qref).catch(()=>{}); });
+window.addEventListener('beforeunload',()=>{ if(search) deleteDoc(search.qref).catch(()=>{}); leaveVoice(); });
 </script>
 </body>
 </html>
