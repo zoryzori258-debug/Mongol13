@@ -97,17 +97,65 @@
     .hand .card{margin-left:-16px}
     .table{border-radius:40px;min-height:140px}
   }
+
+  header{min-height:40px}
+  .center{text-align:center}.center.row,.row.center{justify-content:center}
+  .narrow{max-width:460px;margin:16px auto;width:100%}
+  .col{display:flex;flex-direction:column;gap:10px}
+  .grow{flex:1}.sb{justify-content:space-between}
+  .inp{font:inherit;width:100%;margin-top:6px;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.25);color:var(--ink)}
+  .inp.up{text-transform:uppercase;letter-spacing:1px}
+  code{background:rgba(0,0,0,.3);padding:1px 5px;border-radius:4px}
+  button.sm{padding:6px 12px;font-size:13px}button.xs{padding:5px 9px;font-size:12px}
+  .lnk{color:var(--gold);font-size:13px}
+  .sep{border:none;border-top:1px solid rgba(255,255,255,.12);margin:16px 0}
+  .gold{color:var(--gold)}.b{font-weight:700}.ok{color:#9be7a8;font-weight:600}
+  .code{color:var(--gold);letter-spacing:2px}.big2{font-size:20px}
+  .big{font-size:40px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--gold)}
+  .tabs2{display:flex;gap:6px;margin-bottom:14px}.tabs2 button{flex:1;background:rgba(255,255,255,.08);color:var(--ink)}.tabs2 button.on{background:var(--gold);color:#2a2207}
+  .tabbar{display:flex;gap:6px}.tabbar button{flex:1;min-width:0;padding:10px 4px;font-size:14px;white-space:nowrap;background:rgba(0,0,0,.2);color:var(--ink);border:1px solid rgba(255,255,255,.1)}
+  .tabbar button.on{background:var(--gold);color:#2a2207}
+  .chipbtn{background:rgba(0,0,0,.25);color:var(--ink);border:1px solid rgba(232,196,106,.4);padding:6px 12px;font-size:14px}
+  .profsum{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:10px}
+  .pname{font-size:20px;font-weight:800}
+  .rankcard{display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,rgba(232,196,106,.18),rgba(0,0,0,.15));border:1px solid rgba(232,196,106,.35);border-radius:12px;padding:8px 14px}
+  .rankcard .remoji{font-size:28px}.rankcard .rname{font-weight:800}
+  .rankcard.big{padding:14px 18px}.rankcard.big .remoji{font-size:44px}.rankcard.big .rname{font-size:22px}
+  .stars{color:var(--gold);letter-spacing:2px;font-size:15px}.stars .dim{color:rgba(255,255,255,.18)}
+  .rchip{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.12);white-space:nowrap}
+  .topb{display:inline-block;font-size:12px;font-weight:800;padding:1px 7px;border-radius:999px;background:linear-gradient(135deg,#f6d77a,#c8962e);color:#2a2207;vertical-align:middle}
+  .topnote{margin-top:10px;padding:8px 12px;border-radius:10px;background:rgba(232,196,106,.15);border:1px solid rgba(232,196,106,.4)}
+  .sub2{font-size:12px;color:var(--muted);margin-top:2px}
+  .modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin:10px 0}
+  .mode{background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px}
+  .mode.hl{border-color:rgba(232,196,106,.55);box-shadow:0 0 22px rgba(232,196,106,.12)}
+  .mode .mt{font-size:18px;font-weight:800}
+  .invite{display:flex;gap:8px;align-items:center;background:rgba(232,196,106,.14);border:1px solid rgba(232,196,106,.45);border-radius:12px;padding:10px 12px;margin-top:10px;flex-wrap:wrap}
+  .flist,.toplist,.plist{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+  .frow,.trow,.prow{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.18);border-radius:10px;padding:8px 10px}
+  .trow.me{outline:2px solid rgba(232,196,106,.6)}
+  .tpos{width:30px;text-align:center;font-size:18px}
+  .dot{width:9px;height:9px;border-radius:50%;background:#6b7f74;flex:0 0 auto}.dot.on{background:#5be37a;box-shadow:0 0 6px #5be37a}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px}
+  .stats div{background:rgba(0,0,0,.2);border-radius:10px;padding:10px;text-align:center}.stats b{display:block;font-size:20px}.stats span{font-size:12px;color:var(--muted)}
+  .ladder{display:flex;flex-direction:column;gap:4px;margin-top:8px;font-size:14px}
+  .tbar{height:6px;border-radius:4px;background:rgba(255,255,255,.12);overflow:hidden;margin-top:8px}
+  .tbar i{display:block;height:100%;background:var(--gold);transition:width .3s linear}.tbar.low i{background:#ff7a6b}
+  .spinner{width:46px;height:46px;border-radius:50%;border:4px solid rgba(255,255,255,.15);border-top-color:var(--gold);animation:sp 1s linear infinite;margin:6px auto 10px}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .rankdelta{text-align:center;margin:8px 0 12px;padding:10px;border-radius:12px;font-weight:800;font-size:18px;display:flex;flex-direction:column;gap:6px;align-items:center}
+  .rankdelta.up{background:rgba(91,227,122,.15);border:1px solid rgba(91,227,122,.45)}.rankdelta.down{background:rgba(255,122,107,.12);border:1px solid rgba(255,122,107,.4)}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#0b2b1e;border:1px solid rgba(232,196,106,.5);color:var(--ink);padding:10px 16px;border-radius:10px;z-index:200;box-shadow:0 8px 20px rgba(0,0,0,.4)}
+  .gbar{margin-bottom:-4px}
+  .opp .nm{white-space:normal}
+  .overlay .panel{max-height:92vh;overflow:auto}
 </style>
 </head>
 <body>
-<div class="wrap" id="app">
-  <header>
-    <h1>🃏 Монгол <span>13</span></h1>
-    <div class="status" id="status">Ачаалж байна…</div>
-  </header>
+<div class="wrap">
+  <header id="hdr"></header>
   <div id="main"></div>
 </div>
-
 <script type="module">
 /* =====================================================================
    ⚙️  FIREBASE ТОХИРГОО — Firebase консолоос авсан утгуудаа энд хуулна
@@ -123,9 +171,8 @@ const firebaseConfig = {
 };
 /* ===================================================================== */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, doc, onSnapshot, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-const CONFIG_OK = !String(firebaseConfig.apiKey).startsWith('PASTE');
+import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, sendEmailVerification, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, collection, getDoc, getDocs, setDoc, updateDoc, deleteDoc, addDoc, onSnapshot, runTransaction, query, where, orderBy, limit, serverTimestamp, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 /* ================== Хөзрийн үндэс ================== */
 const RANKS=['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
@@ -175,20 +222,48 @@ function beats(a,t){
 }
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
+/* ================== Цаг ================== */
+const LIMIT=30, TURN_MS=10000, ARRANGE_MS=60000, READY_MS=20000, LOAD_MS=3000, NEXT_MS=8000;
+let clockOffset=0;
+const now=()=>Date.now()+clockOffset;
+
+/* ================== Цол ================== */
+const TIERS=[{n:'Начин',e:'🐦',s:4},{n:'Харцага',e:'🦅',s:4},{n:'Заан',e:'🐘',s:5},{n:'Гарьд',e:'🔥',s:5},{n:'Арслан',e:'🦁',s:5}];
+const SUBS=['III','II','I'];
+function rankInfo(p){
+  p=Math.max(0,p|0); let acc=0;
+  for(const t of TIERS){ for(let k=0;k<3;k++){ if(p<acc+t.s) return {tier:t.n,e:t.e,sub:SUBS[k],stars:p-acc,max:t.s,label:`${t.n} ${SUBS[k]}`}; acc+=t.s; } }
+  return {tier:'Аварга',e:'👑',sub:'',stars:p-acc,max:0,label:'Аварга'};
+}
+function starsHTML(p){
+  const r=rankInfo(p);
+  if(!r.max) return `<span class="stars">★×${r.stars}</span>`;
+  return `<span class="stars">${'★'.repeat(r.stars)}<span class="dim">${'★'.repeat(r.max-r.stars)}</span></span>`;
+}
+
 /* ================== Тоглоомын төлөв (цэвэр функцүүд) ================== */
-function emptyState(){return {v:0,phase:'lobby',seats:[null,null,null,null],hands:{},turn:-1,table:null,passed:[],scores:{},log:[],winner:null,results:null,lastWinnerSeat:-1,deal:0};}
-const LIMIT=30;
+function emptyState(){return {v:0,phase:'lobby',mode:'friends',seats:[null,null,null,null],hands:{},turn:-1,turnAt:0,table:null,passed:[],
+  scores:{},log:[],winner:null,results:null,lastWinnerSeat:-1,deal:0,round:0,out:[],left:[],names:{},pts:{},ready:[],arranged:[],
+  deadline:0,hostId:null,matchWinner:null,matchActive:false};}
 const isOut=(s,i)=>!!(s.seats[i]&&(s.out||[]).includes(s.seats[i].id));
-const active=s=>s.seats.map((x,i)=>x?i:-1).filter(i=>i>=0);           // суудалд байгаа бүх хүн
-const inGame=s=>active(s).filter(i=>!isOut(s,i));                       // хасагдаагүй тоглогчид
+const active=s=>s.seats.map((x,i)=>x?i:-1).filter(i=>i>=0);
+const inGame=s=>active(s).filter(i=>!isOut(s,i));
+const hasLeft=(s,id)=>(s.left||[]).includes(id);
+const isBotSeat=(s,i)=>!!(s.seats[i]&&s.seats[i].bot);
+const seatGone=(s,i)=>!!(s.seats[i]&&!s.seats[i].bot&&hasLeft(s,s.seats[i].id));   // тоглолтоос гарсан
+const canAct=(s,i)=>!!(s.seats[i]&&!isOut(s,i)&&!seatGone(s,i));
+const alive=s=>inGame(s).filter(i=>!seatGone(s,i));
+const humanIds=s=>s.seats.filter(x=>x&&!x.bot).map(x=>x.id);
+const presentHumans=s=>humanIds(s).filter(id=>!hasLeft(s,id));
 function findNext(s,from){
-  for(let k=1;k<=4;k++){const i=(from+k)%4; if(s.seats[i]&&!isOut(s,i)) return i;}
+  for(let k=1;k<=4;k++){const i=(from+k)%4; if(canAct(s,i)) return i;}
   return from;
 }
-function pushLog(s,e){s.log=[...s.log,e].slice(-30);}
+function pushLog(s,e){s.log=[...(s.log||[]),e].slice(-30);}
+function setTurn(s,seat){ s.turn=seat; s.turnAt=now(); s.deadline=now()+TURN_MS; }
 
-function newMatch(s){ // шинэ тоглолт: оноо 0, хасагдсан хүнгүй
-  s.out=[]; s.matchWinner=null; s.lastWinnerSeat=-1; s.matchActive=true; s.round=0;
+function newMatch(s){
+  s.out=[]; s.matchWinner=null; s.lastWinnerSeat=-1; s.matchActive=true; s.round=0; s.results=null; s.matchNo=(s.matchNo||0)+1;
   active(s).forEach(si=>{ s.scores[s.seats[si].id]=0; });
   return s;
 }
@@ -200,13 +275,28 @@ function doDeal(s){
   s.hands={};
   seats.forEach((si,k)=>{s.hands[si]=deck.slice(k*13,k*13+13).sort((a,b)=>a-b);});
   let first=s.lastWinnerSeat;
-  if(first<0||!s.seats[first]||isOut(s,first)){
-    let low=99; seats.forEach(si=>{const m=s.hands[si][0]; if(m<low){low=m;first=si;}});
+  if(first<0||!canAct(s,first)){
+    let low=99; alive(s).forEach(si=>{const m=s.hands[si][0]; if(m<low){low=m;first=si;}});
   }
-  s.phase='playing'; s.turn=first; s.table=null; s.passed=[]; s.winner=null; s.results=null; s.deal=(s.deal||0)+1; s.round=(s.round||0)+1;
+  s.phase='arrange'; s.turn=first; s.table=null; s.passed=[]; s.winner=null; s.results=null;
+  s.deal=(s.deal||0)+1; s.round=(s.round||0)+1; s.arranged=[]; s.deadline=now()+ARRANGE_MS;
   seats.forEach(si=>{const k=s.seats[si].id; if(s.scores[k]==null) s.scores[k]=0;});
   pushLog(s,{t:'deal',s:first});
+  maybeStartPlay(s);
   return s;
+}
+function maybeStartPlay(s){
+  if(s.phase!=='arrange') return s;
+  const need=alive(s).filter(i=>!isBotSeat(s,i)).map(i=>s.seats[i].id);
+  if(need.every(id=>(s.arranged||[]).includes(id))) startPlay(s);
+  return s;
+}
+function startPlay(s){ s.phase='playing'; setTurn(s,s.turn); return s; }
+function doArranged(s,id){
+  if(s.phase!=='arrange') return null;
+  if((s.arranged||[]).includes(id)) return null;
+  s.arranged=[...(s.arranged||[]),id];
+  return maybeStartPlay(s);
 }
 function doPlay(s,seat,cards){
   if(s.phase!=='playing') throw 'Тоглолт эхлээгүй байна.';
@@ -219,25 +309,35 @@ function doPlay(s,seat,cards){
   if(s.table&&!beats(cb,s.table)) throw s.table.n!==cb.n?`Ширээн дээр ${s.table.n} хөзөр байна — ${s.table.n} хөзрөөр дарна.`:'Ширээн дээрхээс хүчтэй хослол хэрэгтэй.';
   s.hands[seat]=hand.filter(c=>!cards.includes(c));
   s.table={...cb,cards:[...cards].sort((a,b)=>a-b),by:seat};
-  s.passed=[]; // хэн нэг нь дарвал өмнө өнжсөн хүмүүст дахин ээлж ирнэ
+  s.passed=[];
   pushLog(s,{t:'play',s:seat,c:s.table.cards});
   if(!s.hands[seat].length){ finish(s,seat); return s; }
   const nx=findNext(s,seat);
-  if(nx===seat){ s.table=null; s.passed=[]; s.turn=seat; }
-  else s.turn=nx;
+  if(nx===seat){ s.table=null; s.passed=[]; }
+  setTurn(s,nx);
   return s;
 }
-function doPass(s,seat){
+function doPass(s,seat,auto){
   if(s.phase!=='playing') throw 'Тоглолт эхлээгүй байна.';
   if(s.turn!==seat) throw 'Таны ээлж биш байна.';
   if(!s.table) throw 'Шинэ тойргийг эхлүүлэгч өнжиж болохгүй.';
-  s.passed=[...s.passed,seat];
-  pushLog(s,{t:'pass',s:seat});
-  const nx=findNext(s,seat);
-  if(nx===s.table.by||nx===seat){
-    const lead=s.table.by; s.table=null; s.passed=[]; s.turn=lead;
+  pushLog(s,{t:auto?'auto':'pass',s:seat});
+  return passTurn(s,seat);
+}
+function passTurn(s,seat){
+  if(!s.passed.includes(seat)) s.passed=[...s.passed,seat];
+  const others=alive(s).filter(i=>i!==s.table.by);
+  if(others.every(i=>s.passed.includes(i))){
+    const lead=canAct(s,s.table.by)?s.table.by:findNext(s,s.table.by);
+    s.table=null; s.passed=[];
     pushLog(s,{t:'clear',s:lead});
-  } else s.turn=nx;
+    setTurn(s,lead);
+  } else setTurn(s,findNext(s,seat));
+  return s;
+}
+function skipLead(s,seat){ // эхлүүлэгч өнжвөл эхлүүлэх эрх дараагийн хүнд шилжинэ
+  pushLog(s,{t:'skip',s:seat});
+  setTurn(s,findNext(s,seat));
   return s;
 }
 function finish(s,win){
@@ -249,21 +349,71 @@ function finish(s,win){
     const k=s.seats[si].id; s.scores[k]=(s.scores[k]||0)+p;
     res.push({s:si,p,left:h.length,notes});
   });
-  inGame(s).forEach(si=>{ const k=s.seats[si].id; if((s.scores[k]||0)>=LIMIT){ newlyOut.push(si); } });
+  inGame(s).forEach(si=>{ if((s.scores[s.seats[si].id]||0)>=LIMIT) newlyOut.push(si); });
   s.out=[...(s.out||[]),...newlyOut.map(si=>s.seats[si].id)];
   res.forEach(r=>{ r.out=newlyOut.includes(r.s); });
-  const left=inGame(s);
-  s.phase='ended'; s.winner=win; s.lastWinnerSeat=win; s.turn=-1;
+  const left=alive(s);
+  s.winner=win; s.lastWinnerSeat=win; s.turn=-1;
   pushLog(s,{t:'win',s:win});
   newlyOut.forEach(si=>pushLog(s,{t:'out',s:si}));
-  let matchOver=false;
-  if(left.length<=1){
-    matchOver=true; s.matchActive=false; s.matchWinner=left.length?s.seats[left[0]].id:null;
+  const matchOver=left.length<=1;
+  if(matchOver){
+    s.matchActive=false; s.matchWinner=left.length?s.seats[left[0]].id:null;
     if(left.length) pushLog(s,{t:'match',s:left[0]});
+    s.phase='over'; s.deadline=0;
+  }else{
+    s.phase='ended'; s.deadline=s.mode==='friends'?0:now()+NEXT_MS;
   }
   s.results={win,res,matchOver,matchWinnerSeat:left.length===1?left[0]:-1};
 }
-
+/* Хугацаа дуусахад */
+function timeoutAct(s){
+  switch(s.phase){
+    case 'ready':
+      if(presentHumans(s).every(id=>s.ready.includes(id))){ s.phase='loading'; s.deadline=now()+LOAD_MS; return s; }
+      s.phase='cancelled'; s.deadline=0; return s;
+    case 'loading': return doDeal(s);
+    case 'arrange': return startPlay(s);
+    case 'playing': {
+      const seat=s.turn;
+      if(s.table) return doPass(s,seat,true);
+      return skipLead(s,seat);
+    }
+    case 'ended': return s.mode==='friends'?null:doDeal(s);
+  }
+  return null;
+}
+function doReady(s,id){
+  if(s.phase!=='ready'||s.ready.includes(id)) return null;
+  s.ready=[...s.ready,id];
+  if(presentHumans(s).every(x=>s.ready.includes(x))){ s.phase='loading'; s.deadline=now()+LOAD_MS; }
+  return s;
+}
+function doLeave(s,id){
+  if(s.phase==='lobby'){ const i=s.seats.findIndex(x=>x&&x.id===id); if(i>=0) s.seats[i]=null; return s; }
+  if(hasLeft(s,id)) return null;
+  s.left=[...(s.left||[]),id];
+  if(s.phase==='ready'){ s.phase='cancelled'; s.deadline=0; }
+  pushLog(s,{t:'left',id});
+  if(!presentHumans(s).length && s.phase!=='over'){ s.phase='abandoned'; s.deadline=0; return s; }
+  if(['arrange','playing','ended'].includes(s.phase)){
+    const al=alive(s), seat=s.seats.findIndex(x=>x&&x.id===id);
+    if(al.length<=1){                     // ганц тоглогч үлдвэл тэр ялна
+      const w=al.length?al[0]:-1;
+      s.matchActive=false; s.matchWinner=w>=0?s.seats[w].id:null; s.phase='over'; s.deadline=0; s.turn=-1;
+      if(w>=0){ pushLog(s,{t:'match',s:w}); s.winner=w; }
+      s.results={win:w,res:[],matchOver:true,matchWinnerSeat:w,byLeave:true};
+    }else if(s.phase==='playing'&&s.turn===seat){
+      if(s.table) passTurn(s,seat); else skipLead(s,seat);
+    }else if(s.phase==='arrange') maybeStartPlay(s);
+  }
+  return s;
+}
+function botAct(s){
+  if(s.phase!=='playing'||!isBotSeat(s,s.turn)) return null;
+  const mv=botMove(s,s.turn);
+  return mv?doPlay(s,s.turn,mv):doPass(s,s.turn);
+}
 /* ================== Робот ================== */
 function botMove(s,seat){
   const hand=[...s.hands[seat]].sort((a,b)=>a-b), t=s.table;
@@ -295,113 +445,6 @@ function botMove(s,seat){
   return ok.length?ok[0]:null;
 }
 
-/* ================== Хадгалалт (онлайн / ганцаараа) ================== */
-let fdb=null,myId=null,mode='loading';
-let state=null, docRef=null, roomCode='', myName='';
-try{ myName=localStorage.getItem('m13name')||''; }catch(e){}
-let selected=new Set(), message='', msgErr=false, botTimer=null, writing=false;
-const names={}; const botNames=['🤖 Робот 1','🤖 Робот 2','🤖 Робот 3'];
-
-function clone(x){return JSON.parse(JSON.stringify(x));}
-function setMsg(t,err){message=t||'';msgErr=!!err;render();}
-
-async function tx(fn){
-  if(mode==='local'){
-    try{ const n=fn(clone(state)); if(n){ n.v=(state.v||0)+1; state=n; render(); scheduleBot(); } }
-    catch(e){ setMsg(String(e),true); }
-    return;
-  }
-  if(writing||!docRef) return; writing=true;
-  try{
-    let err=null;
-    const next=await runTransaction(fdb, async t=>{
-      err=null;
-      const snap=await t.get(docRef);
-      const cur=snap.exists()?clone(snap.data().state||emptyState()):emptyState();
-      let n;
-      try{ n=fn(cur); }catch(e){ err=String(e); return null; }
-      if(!n) return null;
-      n.v=(cur.v||0)+1;
-      t.set(docRef,{state:n,updatedAt:Date.now()});
-      return n;
-    });
-    if(err) setMsg(err,true);
-    else if(next){ state=next; Object.assign(names,state.names||{}); render(); }
-  }catch(e){
-    console.error(e);
-    setMsg('Холболтын алдаа. Дахин оролдоно уу.',true);
-  }finally{ writing=false; }
-}
-
-let onlineId=null;
-function startLocal(){
-  if(myId!=='me') onlineId=myId;
-  mode='local'; myId='me';
-  const s=emptyState();
-  s.seats=[{id:'me'},{id:'bot1',bot:true},{id:'bot2',bot:true},{id:'bot3',bot:true}];
-  names.me='Та';
-  state=doDeal(s); render(); scheduleBot();
-}
-
-function mySeat(){ if(!state) return -1; return state.seats.findIndex(x=>x&&x.id===myId); }
-function botRunnerSeat(){ // хамгийн бага дугаартай хүн тоглогч роботыг удирдана
-  return state.seats.findIndex(x=>x&&!x.bot);
-}
-function scheduleBot(){
-  clearTimeout(botTimer);
-  if(!state||state.phase!=='playing') return;
-  const seat=state.turn, p=state.seats[seat];
-  if(!p||!p.bot) return;
-  if(mode!=='local'&&botRunnerSeat()!==mySeat()) return;
-  const v=state.v;
-  botTimer=setTimeout(()=>{
-    tx(s=>{
-      if(s.v!==v||s.phase!=='playing'||s.turn!==seat) return null;
-      const mv=botMove(s,seat);
-      return mv?doPlay(s,seat,mv):doPass(s,seat);
-    });
-  },900+Math.random()*600);
-}
-
-/* ================== Нэр ================== */
-function nameOf(seat){
-  const p=state&&state.seats[seat]; if(!p) return '—';
-  if(p.bot) return botNames[(+p.id.replace('bot','')-1)%3]||'Робот';
-  if(p.id===myId) return (names[p.id]?names[p.id]+' (та)':'Та');
-  return names[p.id]||'Тоглогч '+(seat+1);
-}
-function nameById(id,idx){
-  const seat=state.seats.findIndex(x=>x&&x.id===id);
-  if(seat>=0) return nameOf(seat);
-  if(id.startsWith('bot')) return botNames[(+id.replace('bot','')-1)%3]||'Робот';
-  if(id===myId) return names[id]?names[id]+' (та)':'Та';
-  return names[id]||'Тоглогч ('+(idx+1)+')';
-}
-async function resolveNames(){
-  return; // нэрийг өрөөний өгөгдөлд хадгална
-  const ids=[...new Set([...state.seats.filter(x=>x&&!x.bot).map(x=>x.id),...Object.keys(state.scores||{}).filter(k=>!k.startsWith('bot'))])].filter(id=>!(id in names));
-  if(!ids.length) return;
-  try{ const ps=await user.profiles(ids); let ch=false; ids.forEach(id=>{const n=ps&&ps[id]&&ps[id].name; if(n){names[id]=n;ch=true;}}); if(ch) render(); }catch(e){}
-}
-
-/* ================== Харагдац ================== */
-const $=s=>document.querySelector(s);
-function esc(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML;}
-function cardHTML(c,extra=''){
-  const red=isRed(c);
-  return `<div class="card ${red?'red':''} ${extra}" data-c="${c}"><div class="tl">${RANKS[rank(c)]}<small>${SUITS[suit(c)]}</small></div><div class="mid">${SUITS[suit(c)]}</div></div>`;
-}
-function logText(e){
-  const n=esc(nameOf(e.s));
-  if(e.t==='play') return `${n}: ${e.c.map(c=>RANKS[rank(c)]+SUITS[suit(c)]).join(' ')}`;
-  if(e.t==='pass') return `${n} өнжлөө`;
-  if(e.t==='clear') return `Бүгд өнжлөө — ${n} шинэ тойрог эхлүүлнэ`;
-  if(e.t==='deal') return `Хөзөр тараалаа — ${n} эхэлнэ`;
-  if(e.t==='win') return `✅ ${n} тойрогт түрүүллээ`;
-  if(e.t==='out') return `❌ ${n} ${LIMIT} оноонд хүрч хасагдлаа`;
-  if(e.t==='match') return `🏆 ${n} тоглолтод хожлоо!`;
-  return '';
-}
 const RULES=`<details><summary>Дүрэм</summary><ul>
 <li>Хүн бүрт 13 хөзөр. Гартаа байгаа хөзрөө хамгийн түрүүнд дуусгасан нь хожно.</li>
 <li>Хүч: 3 &lt; 4 &lt; … &lt; K &lt; A &lt; <b>2</b>. Ижил тоо бол дүрсээр: ♦ Дөрвөлжин &lt; ♣ Цэцэг &lt; ♥ Бундан &lt; ♠ <b>Гил</b>.</li>
@@ -414,6 +457,8 @@ const RULES=`<details><summary>Дүрэм</summary><ul>
 <li>Эхний тоглолтыг хамгийн бага хөзөртэй нь, дараагийнхыг өмнөх ялагч эхэлнэ.</li>
 <li>Оноо: тойрогт түрүүлсэн хүн 0 оноо авна. Бусад нь гартаа үлдсэн хөзрийн тоогоор оноо авна. 10 ба түүнээс олон хөзөр үлдвэл ×2.</li>
 <li>Нийт оноо ${LIMIT} ба түүнээс дээш болсон хүн хасагдаж, цааш харж сууна. Хамгийн сүүлд үлдсэн хүн тоглолтод хожно.</li>
+<li>Ээлж бүр 10 секунд. Цаг дуусвал автоматаар өнжинө. Шинэ тойрог эхлүүлэх хүн өнжвөл эхлүүлэх эрх дараагийн хүнд шилжинэ.</li>
+<li>Тоглолтоос гарсан хүний хөзөр гартаа үлдэж, ээлж нь автоматаар өнжинө. Цолтой горимд робот оролцохгүй.</li>
 </ul></details>`;
 
 /* ===== Гарын хөзрийн дараалал, чирэх ===== */
@@ -432,6 +477,7 @@ function setupHandDrag(hd){
       if(e.button>0) return;
       e.preventDefault();
       const st={x:e.clientX,y:e.clientY,moved:false,ghost:null,raf:0,lx:e.clientX,ly:e.clientY};
+      dragging=true; // дарж эхэлмэгц дэлгэц шинэчлэхийг түр зогсооно
       const cards=()=>[...hd.querySelectorAll('.card')];
       const flipMove=(doMove)=>{
         const list=cards(), before=new Map(list.map(c=>[c,c.getBoundingClientRect()]));
@@ -462,7 +508,7 @@ function setupHandDrag(hd){
         st.lx=ev.clientX; st.ly=ev.clientY;
         if(!st.moved){
           if(Math.hypot(ev.clientX-st.x,ev.clientY-st.y)<6) return;
-          st.moved=true; dragging=true;
+          st.moved=true;
           const r=el.getBoundingClientRect();
           const g=el.cloneNode(true); g.classList.remove('sel'); g.classList.add('drag-ghost');
           Object.assign(g.style,{left:r.left+'px',top:r.top+'px',width:r.width+'px',height:r.height+'px'});
@@ -493,235 +539,754 @@ function setupHandDrag(hd){
   });
 }
 
-function render(){
-  if(dragging){ pendingRender=true; return; }
-  const main=$('#main'), st=$('#status');
-  if(mode==='loading'){ st.textContent='Холбогдож байна…'; main.innerHTML=`<div class="panel note">Ачаалж байна…</div>`; return; }
-  if(mode==='home'||mode==='config'||mode==='notfound'||mode==='error'){ renderHome(); return; }
-  st.textContent=mode==='local'?'Ганцаараа · 3 роботтой':'Өрөө: '+roomCode;
-  if(state.phase==='lobby') renderLobby();
-  else renderGame();
+/* ================== Firebase ================== */
+const CONFIG_OK = !String(firebaseConfig.apiKey).startsWith('PASTE');
+let auth=null, fdb=null;
+let myId=null, profile=null, top10=[], invites=[];
+let screen='loading', tab='play', authView='login', authMsg='', authBusy=false;
+let state=null, gameRef=null, gameId=null, unsubGame=null;
+let selected=new Set(), message='', msgErr=false, writing=false;
+let search=null, friendsCache={}, friendsLoaded=false, homeMsg='', homeErr=false;
+let applyBusy=false, lastActV=-1, prevTurnKey='';
+const unsubs=[];
+let soundOn=true; try{ soundOn=localStorage.getItem('m13sound')!=='0'; }catch(e){}
+
+const $=s=>document.querySelector(s);
+function esc(t){const d=document.createElement('div');d.textContent=t==null?'':String(t);return d.innerHTML;}
+function clone(x){return JSON.parse(JSON.stringify(x));}
+function genCode(n){return Array.from({length:n},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.floor(Math.random()*32)]).join('');}
+function setMsg(t,err){message=t||'';msgErr=!!err;render();}
+function toast(t){ const d=document.createElement('div'); d.className='toast'; d.textContent=t; document.body.appendChild(d); setTimeout(()=>d.remove(),3200); }
+function tsMs(x){ return x&&typeof x.toMillis==='function'?x.toMillis():(typeof x==='number'?x:0); }
+
+/* ---------- Дуу ---------- */
+let actx=null;
+function beep(f=660,d=.12,type='sine',vol=.08){
+  if(!soundOn) return;
+  try{ actx=actx||new (window.AudioContext||window.webkitAudioContext)(); const o=actx.createOscillator(), g=actx.createGain();
+    o.type=type; o.frequency.value=f; g.gain.value=vol; o.connect(g); g.connect(actx.destination);
+    const t=actx.currentTime; g.gain.exponentialRampToValueAtTime(.0001,t+d); o.start(t); o.stop(t+d); }catch(e){}
 }
 
-function renderHome(){
-  $('#status').textContent='';
-  let top='';
-  if(mode==='config') top=`<div class="warn">Firebase тохиргоо хийгдээгүй байна. <b>index.html</b> файлын эхэнд байгаа <code>firebaseConfig</code>-д өөрийн утгуудаа хуулна уу. Түр зуур роботуудтай дасгал хийж болно.</div>`;
-  if(mode==='notfound') top=`<div class="warn">"${esc(roomCode)}" кодтой өрөө олдсонгүй. Кодоо шалгаад дахин оролдоно уу.</div>`;
-  if(mode==='error') top=`<div class="warn">Сервертэй холбогдож чадсангүй. Интернэтээ шалгаад хуудсаа дахин ачаална уу.</div>`;
-  const online=mode!=='config'&&mode!=='error';
-  const hashCode=(location.hash||'').replace('#','').toUpperCase();
-  $('#main').innerHTML=`<div class="panel" style="max-width:460px;margin:20px auto;display:flex;flex-direction:column;gap:14px">
-    ${top}
-    ${online?`
-    <label class="note">Таны нэр<br><input id="nm" maxlength="16" value="${esc(myName)}" placeholder="Жишээ: Бат" class="inp"></label>
-    ${hashCode&&mode!=='notfound'?`<button id="joinHash">"${esc(hashCode)}" өрөөнд орох</button>`:`
-    <button id="create">Шинэ өрөө үүсгэх</button>
-    <div class="row"><input id="code" maxlength="8" placeholder="Өрөөний код" class="inp" style="flex:1;text-transform:uppercase"><button class="ghost" id="join">Нэгдэх</button></div>`}
-    <div class="msg err" id="hmsg"></div>`:''}
-    <button class="ghost" id="local">Ганцаараа роботуудтай дасгал хийх</button>
-    <div>${RULES}</div></div>`;
-  const getName=()=>{ const v=($('#nm')?.value||'').trim(); if(!v){ $('#hmsg').textContent='Нэрээ оруулна уу.'; return null; } myName=v; try{localStorage.setItem('m13name',v);}catch(e){} return v; };
-  const c=$('#create'); if(c) c.onclick=()=>{ if(!getName()) return; const code=Array.from({length:5},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.floor(Math.random()*32)]).join(''); connect(code,true); };
-  const j=$('#join'); if(j) j.onclick=()=>{ if(!getName()) return; const code=($('#code').value||'').trim().toUpperCase(); if(!code){ $('#hmsg').textContent='Өрөөний кодоо оруулна уу.'; return; } connect(code,false); };
-  const jh=$('#joinHash'); if(jh) jh.onclick=()=>{ if(!getName()) return; connect(hashCode,false); };
-  $('#local').onclick=startLocal;
-}
+/* ---------- Цол, нэрийн тэмдэг ---------- */
+function topPos(id){ const i=top10.findIndex(u=>u.id===id); return i>=0&&(top10[i].rankPoints||0)>0?i+1:0; }
+function topBadge(id){ const p=topPos(id); return p?`<span class="topb" title="Топ 10">🏅${p}</span>`:''; }
+function rankChip(pts){ const r=rankInfo(pts); return `<span class="rchip">${r.e} ${esc(r.label)}</span>`; }
 
-function renderLobby(){
-  const me=mySeat(), seated=me>=0, n=active(state).length;
-  let html=`<div class="panel"><div class="row" style="justify-content:space-between"><b>Өрөө</b><span class="note">${n}/4 тоглогч</span></div>`;
-  html+=`<div class="row" style="margin-top:10px;gap:10px"><span>Өрөөний код: <b style="color:var(--gold);font-size:20px;letter-spacing:2px">${esc(roomCode)}</b></span>
-    <button class="ghost" id="copyLink" style="padding:6px 12px;font-size:13px">Линк хуулах</button>
-    <button class="ghost" id="leaveRoom" style="padding:6px 12px;font-size:13px">Өрөөнөөс гарах</button></div>`;
-  html+=`<div class="seats">`;
-  for(let i=0;i<4;i++){
-    const p=state.seats[i];
-    if(p){
-      html+=`<div class="seat filled"><div class="who">${esc(nameOf(i))}</div><div class="sub">${p.bot?'Компьютер':'Хүн'} · Оноо: ${state.scores[p.id]||0}</div>
-      ${p.id===myId?`<button class="ghost" data-leave="${i}">Суудлаас босох</button>`
-        :(p.bot&&(seated||isHost()))?`<button class="ghost" data-leave="${i}">Робот хасах</button>`
-        :(!p.bot&&isHost())?`<button class="danger" data-leave="${i}">Тоглогчийг хасах</button>`:''}</div>`;
-    }else{
-      html+=`<div class="seat"><div class="who" style="color:var(--muted)">Сул суудал</div>
-      <div class="row">${!seated?`<button data-sit="${i}">Энд суух</button>`:''}${seated?`<button class="ghost" data-bot="${i}">+ Робот</button>`:''}</div></div>`;
-    }
+/* ================== Гүйлгээ (тоглоомын төлөв) ================== */
+async function tx(fn){
+  if(screen==='local'){
+    try{ const n=fn(clone(state)); if(n){ n.v=(state.v||0)+1; state=n; afterState(); render(); } }
+    catch(e){ setMsg(String(e),true); }
+    return;
   }
-  html+=`</div><div class="row">
-    ${isHost()?'':'<span class="note">Тоглолтыг зөвхөн өрөөний эзэн эхлүүлнэ.</span>'}<button id="start" ${(!isHost()||n<2)?'disabled':''} style="${isHost()?'':'display:none'}">${state.matchActive?'Тоглолтыг үргэлжлүүлэх':'Шинэ тоглолт эхлүүлэх'}</button>
-    <button class="ghost" id="local">Ганцаараа роботтой дасгал</button>
-  </div>
-  <p class="note" style="margin-top:12px">Найздаа өрөөний линкийг (эсвэл кодыг) илгээгээрэй. Тэр нэрээ оруулаад сул суудалд сууна. 2–4 хүн тоглоно, сул суудалд робот нэмж болно.</p>
-  <div style="margin-top:8px">${RULES}</div></div>`;
-  if(message) html+=`<div class="msg ${msgErr?'err':''}">${esc(message)}</div>`;
-  // Онооны хүснэгт
-  const sc=Object.entries(state.scores||{}).filter(([k,v])=>!k.startsWith('bot')||v!==0);
-  if(sc.length){
-    html+=`<div class="panel"><div class="row" style="justify-content:space-between;margin-bottom:6px"><b>Нийт оноо</b>
-      ${isHost()?`<button class="danger" id="resetScores">Бүх оноог 0 болгох</button>`:''}</div>
-      <table class="scores">${sc.map(([k,v],i)=>`<tr><td>${esc(nameById(k,i))}</td><td class="num">${isHost()
-        ?`<input type="number" step="1" value="${v}" data-score="${esc(k)}" style="width:80px;font:inherit;padding:4px 6px;border-radius:6px;border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.25);color:var(--ink);text-align:right">`
-        :`<span class="${v>0?'pos':v<0?'neg':''}">${v}</span>`}</td></tr>`).join('')}</table>
-      ${isHost()?`<div class="row" style="margin-top:10px"><button class="ghost" id="saveScores">Оноо хадгалах</button><span class="note">Зөвхөн өрөөний эзэн оноог засна.</span></div>`:''}</div>`;
-  }
-  $('#main').innerHTML=html;
-  const cpl=$('#copyLink'); if(cpl) cpl.onclick=async()=>{ const url=location.origin+location.pathname+'#'+roomCode; try{ await navigator.clipboard.writeText(url); cpl.textContent='Хуулагдлаа ✓'; }catch(e){ cpl.textContent=url; } };
-  const lvr=$('#leaveRoom'); if(lvr) lvr.onclick=()=>{ location.hash=''; location.reload(); };
-  const ss=$('#saveScores'); if(ss) ss.onclick=()=>{
-    const vals={}; document.querySelectorAll('[data-score]').forEach(inp=>{ const n=Math.round(Number(inp.value)); if(Number.isFinite(n)) vals[inp.dataset.score]=n; });
-    tx(s=>{ Object.entries(vals).forEach(([k,n])=>{ s.scores[k]=n; }); return s; }).then(()=>{ if(!msgErr) setMsg('Оноо хадгалагдлаа.'); });
-  };
-  const rs=$('#resetScores'); if(rs) rs.onclick=()=>confirmBox('Бүх оноог 0 болгож шинэ тоглолт эхлүүлэх үү?',()=>tx(s=>{ Object.keys(s.scores).forEach(k=>s.scores[k]=0); s.out=[]; s.matchActive=false; s.matchWinner=null; return s; }));
-  document.querySelectorAll('[data-sit]').forEach(b=>b.onclick=()=>{const i=+b.dataset.sit;tx(s=>{
-    if(s.phase!=='lobby') throw 'Тоглолт эхэлчихсэн байна.';
-    if(s.seats.some(x=>x&&x.id===myId)) return null;
-    if(s.seats[i]) throw 'Энэ суудалд хүн суучихсан.';
-    s.seats[i]={id:myId}; s.names={...(s.names||{}),[myId]:myName}; return s;});});
-  document.querySelectorAll('[data-bot]').forEach(b=>b.onclick=()=>{const i=+b.dataset.bot;tx(s=>{
-    if(s.seats[i]) return null;
-    const used=s.seats.filter(x=>x&&x.bot).map(x=>x.id);
-    const id=['bot1','bot2','bot3'].find(x=>!used.includes(x)); if(!id) return null;
-    s.seats[i]={id,bot:true}; return s;});});
-  document.querySelectorAll('[data-leave]').forEach(b=>b.onclick=()=>{const i=+b.dataset.leave;tx(s=>{ if(s.phase!=='lobby') return null; s.seats[i]=null; return s;});});
-  const sb=$('#start'); if(sb) sb.onclick=()=>isHost()&&tx(s=>{ if(s.phase!=='lobby') return null; return doDeal(s); });
-  $('#local').onclick=()=>{ if(unsub){unsub();unsub=null;} docRef=null; startLocal(); };
+  if(writing||!gameRef) return; writing=true;
+  try{
+    let err=null;
+    const next=await runTransaction(fdb, async t=>{
+      err=null;
+      const snap=await t.get(gameRef);
+      if(!snap.exists()) return null;
+      const cur=clone(snap.data().state);
+      let n; try{ n=fn(cur); }catch(e){ err=String(e); return null; }
+      if(!n) return null;
+      n.v=(cur.v||0)+1;
+      t.update(gameRef,{state:n,updatedAt:Date.now()});
+      return n;
+    });
+    if(err) setMsg(err,true);
+    else if(next){ state=next; afterState(); render(); }
+  }catch(e){ console.error(e); lastActV=-1; setMsg('Холболтын алдаа. Дахин оролдоно уу.',true); }
+  finally{ writing=false; }
 }
 
-function renderGame(){
-  const s=state, me=mySeat(), seats=active(s);
-  const order=me>=0?[...Array(4).keys()].map(k=>(me+k)%4).filter(i=>s.seats[i]&&i!==me):seats;
-  let html=`<div class="opps">`;
-  order.forEach(i=>{
-    const cnt=(s.hands[i]||[]).length, out=isOut(s,i)&&!s.hands[i];
-    html+=`<div class="opp ${s.turn===i?'turn':''} ${s.passed.includes(i)||out?'passed':''}">
-      <div class="nm">${esc(nameOf(i))}</div>
-      <div class="backs">${out?'<span class="note">❌ хасагдсан</span>':Array(Math.min(cnt,13)).fill('<div class="back"></div>').join('')}</div>
-      <div class="cnt">${out?'':cnt+' хөзөр'}${s.passed.includes(i)?' · өнжсөн':''}${out?'':' · '} ${scoreTxt(s.scores[s.seats[i].id])}</div></div>`;
+/* ================== Нэвтрэлт ================== */
+const AUTH_ERR={'auth/email-already-in-use':'Энэ имэйлээр бүртгэл үүссэн байна.','auth/invalid-email':'Имэйл буруу байна.',
+  'auth/weak-password':'Нууц үг хамгийн багадаа 6 тэмдэгт байна.','auth/invalid-credential':'Имэйл эсвэл нууц үг буруу байна.',
+  'auth/user-not-found':'Ийм бүртгэл олдсонгүй.','auth/wrong-password':'Нууц үг буруу байна.','auth/too-many-requests':'Хэт олон оролдлого. Түр хүлээгээд дахин оролдоно уу.',
+  'auth/missing-password':'Нууц үгээ оруулна уу.','auth/network-request-failed':'Интернэт холболтоо шалгана уу.','auth/operation-not-allowed':'Firebase дээр Email/Password нэвтрэлтийг асаагаагүй байна.'};
+const authErr=e=>AUTH_ERR[e&&e.code]||('Алдаа: '+(e&&(e.code||e.message)||e));
+
+async function ensureProfile(u,name){
+  const ref=doc(fdb,'users',u.uid);
+  const snap=await getDoc(ref);
+  if(snap.exists()) return;
+  for(let i=0;i<8;i++){
+    const code=genCode(6);
+    const ok=await runTransaction(fdb,async t=>{
+      const cref=doc(fdb,'codes',code); const c=await t.get(cref);
+      if(c.exists()) return false;
+      t.set(cref,{uid:u.uid});
+      t.set(ref,{name:(name||u.displayName||'Тоглогч').slice(0,16),code,rankPoints:0,games:0,wins:0,rGames:0,rWins:0,
+        friends:[],applied:[],createdAt:Date.now(),lastSeen:serverTimestamp()});
+      return true;
+    });
+    if(ok) return;
+  }
+  throw new Error('ID код үүсгэж чадсангүй');
+}
+async function syncClock(){
+  try{
+    const ref=doc(fdb,'users',myId); const t0=Date.now();
+    await updateDoc(ref,{lastSeen:serverTimestamp()});
+    const d=await getDoc(ref); const t1=Date.now();
+    const srv=tsMs(d.data().lastSeen); if(srv) clockOffset=srv-(t0+t1)/2;
+  }catch(e){ console.warn('clock',e); }
+}
+async function onLogin(u){
+  myId=u.uid;
+  try{ await ensureProfile(u,u.displayName); }catch(e){ console.error(e); screen='error'; render(); return; }
+  await syncClock();
+  unsubs.push(onSnapshot(doc(fdb,'users',myId),snap=>{ profile=snap.data()||null; if(screen==='home'||screen==='game') render(); }));
+  unsubs.push(onSnapshot(query(collection(fdb,'users'),orderBy('rankPoints','desc'),limit(10)),snap=>{
+    top10=snap.docs.map(d=>({id:d.id,...d.data()})); if(screen==='home'||screen==='game') render(); }));
+  unsubs.push(onSnapshot(collection(fdb,'users',myId,'invites'),snap=>{
+    invites=snap.docs.map(d=>({id:d.id,...d.data()})).filter(x=>now()-(x.ts||0)<15*60000).sort((a,b)=>b.ts-a.ts);
+    if(screen==='home') render(); }));
+  setInterval(()=>{ updateDoc(doc(fdb,'users',myId),{lastSeen:serverTimestamp()}).catch(()=>{}); },60000);
+  const code=(location.hash||'').replace('#','').toUpperCase();
+  if(code&&code.length===5) joinRoom(code); else { screen='home'; render(); }
+}
+function onLogout(){ unsubs.splice(0).forEach(f=>{try{f();}catch(e){}}); myId=null; profile=null; screen='auth'; render(); }
+
+/* ================== Санамсаргүй тааруулалт ================== */
+async function startSearch(mode){
+  if(!profile) return;
+  const qref=doc(fdb,'queue',myId);
+  try{
+    await setDoc(qref,{uid:myId,name:profile.name,mode,p:profile.rankPoints||0,ts:now(),ping:now(),gameId:null});
+  }catch(e){ console.error(e); homeMsg='Хайлт эхлүүлж чадсангүй.'; homeErr=true; render(); return; }
+  search={mode,since:now(),count:1,busy:false,lastPing:now(),qref};
+  screen='search'; render();
+  search.unsub=onSnapshot(qref,snap=>{
+    const d=snap.data();
+    if(d&&d.gameId&&search){ const gid=d.gameId; stopSearch(true); deleteDoc(qref).catch(()=>{}); beep(880,.15); openGame(gid); }
   });
-  html+=`</div>`;
-  // Ширээ
-  html+=`<div class="table">`;
-  if(s.table){
-    html+=`<div class="lbl">${esc(nameOf(s.table.by))} — ${TYPE_MN[s.table.type]}</div><div class="cards">${s.table.cards.map(c=>cardHTML(c)).join('')}</div>`;
-  }else if(s.phase==='playing'){
-    html+=`<div class="lbl">${esc(nameOf(s.turn))} шинэ тойрог эхлүүлнэ — дурын хослол буулгана</div>`;
-  }
-  html+=`</div>`;
-  // Миний гар
-  if(me>=0&&!s.hands[me]&&isOut(s,me)){
-    html+=`<div class="panel note">❌ Та ${LIMIT} оноонд хүрч хасагдсан тул энэ тоглолтыг харж байна (${scoreTxt(s.scores[myId])}).</div>`;
-  }else if(me>=0){
-    const hand=orderedHand(s.hands[me]||[], s.deal);
-    [...selected].forEach(c=>{ if(!hand.includes(c)) selected.delete(c); });
-    const myTurn=s.phase==='playing'&&s.turn===me;
-    const sel=[...selected], cb=combo(sel);
-    let hint='';
-    if(sel.length) hint=cb?(TYPE_MN[cb.type]+(s.table&&!beats(cb,s.table)?' — дарахгүй':'')):'Буруу хослол';
-    html+=`<div class="panel me ${myTurn?'turn':''}">
-      <div class="mebar"><div><b>${esc(nameOf(me))}</b> <span class="note">· ${hand.length} хөзөр · ${scoreTxt(s.scores[myId])}</span></div>
-      <div class="note">${myTurn?'<span style="color:var(--gold);font-weight:700">Таны ээлж!</span>':(s.phase==='playing'?esc(nameOf(s.turn))+'-ийн ээлж…':'')}</div></div>
-      <div class="hand" id="hand">${hand.map(c=>cardHTML(c,selected.has(c)?'sel':'')).join('')}</div>
-      <div class="msg ${msgErr?'err':''}">${esc(message||hint)}</div>
-      <div class="row" style="justify-content:center">
-        <button id="play" ${!myTurn||!sel.length?'disabled':''}>Буулгах</button>
-        <button class="ghost" id="pass" ${!myTurn||!s.table?'disabled':''}>Өнжих</button>
-        <button class="ghost" id="clear" ${!sel.length?'disabled':''}>Сонголт арилгах</button>
-      </div>
-      <div class="row" style="justify-content:center;margin-top:8px">
-        <span class="note">Хөзрөө чирж байрыг нь солино ·</span>
-        <button class="ghost" id="sortRank" style="padding:6px 10px;font-size:13px">Тоогоор</button>
-        <button class="ghost" id="sortSuit" style="padding:6px 10px;font-size:13px">Дүрсээр</button>
-      </div></div>`;
-  }else{
-    html+=`<div class="panel note">Та энэ тоглолтыг харж байна. Дараагийн тоглолтод суухын тулд тоглолт дууссаны дараа "Өрөө рүү буцах"-ыг дарна уу.</div>`;
-  }
-  // Лог + оноо
-  html+=`<div class="panel"><div class="row" style="justify-content:space-between;margin-bottom:6px"><b>Явц</b>
-    <div class="row">${isHost()?`<button class="danger" id="toLobby">Өрөө рүү буцах</button>`:''}</div></div>
-    <div class="log">${[...s.log].reverse().map(e=>`<div>${logText(e)}</div>`).join('')}</div>
-    <div style="margin-top:8px">${RULES}</div></div>`;
-  // Дууссан
-  if(s.phase==='ended'&&s.results){
-    const r=s.results;
-    const mo=r.matchOver, mw=r.matchWinnerSeat;
-    const sc=k=>s.scores[k]||0;
-    html+=`<div class="overlay"><div class="panel">
-      ${mo&&mw>=0?`<h2 style="margin:0 0 4px">🏆 ${esc(nameOf(mw))} тоглолтод хожлоо!</h2><p class="note" style="margin:0 0 8px">Бусад нь ${LIMIT} оноонд хүрч хасагдлаа.</p>`
-        :`<h2 style="margin:0 0 6px">✅ ${esc(nameOf(r.win))} ${s.round||''}-р тойрогт түрүүллээ</h2>`}
-      ${s.table&&s.table.cards?`<div class="note" style="margin:6px 0 4px">${esc(nameOf(r.win))}-ийн сүүлд буулгасан хөзөр (${TYPE_MN[s.table.type]||''}):</div><div class="cards" style="justify-content:flex-start;gap:4px;margin-bottom:10px">${s.table.cards.map(c=>cardHTML(c)).join('')}</div>`:''}
-      <table class="scores"><tr><th>Тоглогч</th><th class="num">Энэ тойрог</th><th class="num">Нийт / ${LIMIT}</th></tr>
-      <tr><td>${esc(nameOf(r.win))}</td><td class="num pos">0</td><td class="num">${sc(s.seats[r.win].id)}</td></tr>
-      ${r.res.map(x=>`<tr><td>${esc(nameOf(x.s))}${x.out?' <span class="neg">❌ хасагдлаа</span>':''}<div class="note">${x.left} хөзөр үлдсэн${x.notes.length?' · '+x.notes.join(', '):''}</div></td><td class="num neg">+${x.p}</td><td class="num ${sc(s.seats[x.s].id)>=LIMIT?'neg':''}">${sc(s.seats[x.s].id)}</td></tr>`).join('')}
-      </table>
-      <div class="row" style="margin-top:14px">${isHost()?`<button id="again">${mo?'Шинэ тоглолт эхлүүлэх':'Дараагийн тойрог'}</button>`:''}${isHost()?`<button class="ghost" id="toLobby2">Өрөө рүү</button>`:''}${isHost()?'':'<span class="note">Өрөөний эзэн дараагийн тойргийг эхлүүлэхийг хүлээж байна…</span>'}</div></div></div>`;
-  }
-  $('#main').innerHTML=html;
-  const hd=$('#hand');
-  if(hd) setupHandDrag(hd);
-  const sr=$('#sortRank'); if(sr) sr.onclick=()=>{ handOrder.sort((a,b)=>a-b); render(); };
-  const su=$('#sortSuit'); if(su) su.onclick=()=>{ handOrder.sort((a,b)=>suit(a)-suit(b)||a-b); render(); };
-  const pb=$('#play'); if(pb) pb.onclick=()=>{const cards=[...selected]; message=''; tx(s2=>doPlay(s2,me,cards)).then(()=>{ if(!msgErr) selected.clear(); render(); });};
-  const ps=$('#pass'); if(ps) ps.onclick=()=>{message=''; selected.clear(); tx(s2=>doPass(s2,me));};
-  const cl=$('#clear'); if(cl) cl.onclick=()=>{selected.clear(); message=''; render();};
-  const toL=()=>{ if(mode==='local'){ clearTimeout(botTimer); myId=onlineId; mode=(CONFIG_OK&&myId)?'home':'config'; state=null; render(); return; } tx(s2=>{ s2.phase='lobby'; s2.hands={}; s2.table=null; s2.turn=-1; s2.passed=[]; s2.results=null; return s2; }); };
-  const tl=$('#toLobby'); if(tl) tl.onclick=()=>{ if(state.phase==='playing'){ confirmBox('Тоглолтыг зогсоож өрөө рүү буцах уу?',toL); } else toL(); };
-  const tl2=$('#toLobby2'); if(tl2) tl2.onclick=toL;
-  const ag=$('#again'); if(ag) ag.onclick=()=>{ if(!isHost()) return; selected.clear(); tx(s2=>{ if(s2.phase!=='ended') return null; return doDeal(s2); }); };
+  search.timer=setInterval(searchTick,3000); setTimeout(searchTick,800);
 }
-function isHost(){ return mode==='local'||(!!state&&!!myId&&state.hostId===myId); }
-function scoreTxt(v){ v=v||0; return `<span class="${v>=20?'neg':''}">${v}/${LIMIT} оноо</span>`; }
-function confirmBox(text,ok){
+function stopSearch(keep){
+  if(!search) return;
+  clearInterval(search.timer); try{search.unsub&&search.unsub();}catch(e){}
+  if(!keep) deleteDoc(search.qref).catch(()=>{});
+  search=null;
+}
+async function searchTick(){
+  if(!search||search.busy) return; search.busy=true;
+  try{
+    const t=now();
+    if(t-search.lastPing>10000){ search.lastPing=t; await updateDoc(search.qref,{ping:t}); }
+    const snap=await getDocs(query(collection(fdb,'queue'),where('mode','==',search.mode)));
+    if(!search) return;
+    const list=snap.docs.map(d=>d.data()).filter(d=>!d.gameId&&t-(d.ping||0)<30000);
+    search.count=list.length;
+    const meQ=list.find(d=>d.uid===myId); if(!meQ) return;
+    list.sort((a,b)=>a.ts-b.ts||(a.uid<b.uid?-1:1));
+    if(list[0].uid!==myId) return;               // хамгийн удаан хүлээсэн нь тааруулагч
+    let others=list.filter(d=>d.uid!==myId);
+    if(search.mode==='ranked'){ const win=3+Math.floor((t-meQ.ts)/15000)*3; others=others.filter(d=>Math.abs(d.p-meQ.p)<=win); }
+    others.sort((a,b)=>Math.abs(a.p-meQ.p)-Math.abs(b.p-meQ.p)||a.ts-b.ts);
+    const pick=others.slice(0,3);
+    if(pick.length===3||(pick.length>=1&&t-meQ.ts>=60000)) await createMatch([meQ,...pick]);
+  }catch(e){ if(String(e&&e.message)!=='taken') console.error(e); }
+  finally{ if(search) search.busy=false; }
+}
+async function createMatch(players){
+  const mode=players[0].mode;
+  const gref=doc(collection(fdb,'games'));
+  await runTransaction(fdb,async t=>{
+    const refs=players.map(p=>doc(fdb,'queue',p.uid));
+    const snaps=[]; for(const r of refs) snaps.push(await t.get(r));
+    if(snaps.some(sn=>!sn.exists()||sn.data().gameId)) throw new Error('taken');
+    const s=emptyState(); s.mode=mode; s.phase='ready'; s.deadline=now()+READY_MS; s.ready=[]; s.v=1;
+    players.forEach((p,i)=>{ s.seats[i]={id:p.uid}; s.names[p.uid]=p.name; s.pts[p.uid]=p.p; });
+    if(mode!=='ranked') for(let i=players.length,b=1;i<4;i++,b++) s.seats[i]={id:'bot'+b,bot:true};   // цолтой горимд робот оруулахгүй
+    t.set(gref,{state:s,createdAt:Date.now(),mode});
+    refs.forEach(r=>t.update(r,{gameId:gref.id}));
+  });
+}
+
+/* ================== Найзын өрөө ================== */
+async function createRoom(){
+  if(!profile) return;
+  for(let i=0;i<5;i++){
+    const code=genCode(5), ref=doc(fdb,'games',code);
+    try{
+      const ok=await runTransaction(fdb,async t=>{
+        const sn=await t.get(ref);
+        if(sn.exists()&&(now()-(sn.data().createdAt||0)<24*3600e3)) return false;
+        const s=emptyState(); s.mode='friends'; s.hostId=myId; s.seats[0]={id:myId}; s.v=1;
+        s.names[myId]=profile.name; s.pts[myId]=profile.rankPoints||0;
+        t.set(ref,{state:s,createdAt:Date.now(),mode:'friends'});
+        return true;
+      });
+      if(ok){ openGame(code); return; }
+    }catch(e){ console.error(e); break; }
+  }
+  homeMsg='Өрөө үүсгэж чадсангүй.'; homeErr=true; render();
+}
+async function joinRoom(code){
+  code=(code||'').trim().toUpperCase();
+  try{
+    const sn=await getDoc(doc(fdb,'games',code));
+    if(!sn.exists()||sn.data().mode!=='friends'){ homeMsg=`"${code}" кодтой өрөө олдсонгүй.`; homeErr=true; screen='home'; tab='play'; location.hash=''; render(); return; }
+    openGame(code);
+  }catch(e){ console.error(e); homeMsg='Өрөөнд нэгдэж чадсангүй.'; homeErr=true; screen='home'; render(); }
+}
+
+/* ================== Тоглоом нээх, хаах ================== */
+function openGame(id){
+  closeGame();
+  gameId=id; gameRef=doc(fdb,'games',id); screen='game'; state=null; selected.clear(); message='';
+  if(id.length===5) location.hash=id;
+  else if(myId&&myId!=='me'&&(!profile||profile.activeGame!==id)) updateDoc(doc(fdb,'users',myId),{activeGame:id}).catch(()=>{});
+  render();
+  unsubGame=onSnapshot(gameRef,snap=>{
+    if(!snap.exists()){ toast('Тоглоом олдсонгүй'); if(profile&&profile.activeGame===id) updateDoc(doc(fdb,'users',myId),{activeGame:null}).catch(()=>{}); goHome(); return; }
+    const ns=clone(snap.data().state);
+    if(state&&ns.v<state.v) return;
+    const prevPhase=state&&state.phase;
+    state=ns;
+    if(prevPhase!==state.phase){ selected.clear(); message=''; }
+    afterState(); render();
+  },err=>{ console.error(err); toast('Холболт тасарлаа'); });
+}
+function closeGame(){ if(unsubGame){ try{unsubGame();}catch(e){} unsubGame=null; } gameRef=null; gameId=null; state=null; lastActV=-1; }
+function goHome(){
+  if(state&&gameId&&profile&&profile.activeGame===gameId&&['cancelled','abandoned','over'].includes(state.phase)) updateDoc(doc(fdb,'users',myId),{activeGame:null}).catch(()=>{});
+  closeGame(); stopSearch(); if(location.hash) history.replaceState(null,'',location.pathname); screen=myId&&myId!=='me'?'home':(CONFIG_OK?'auth':'config'); render(); }
+async function leaveGame(){
+  const s=state;
+  if(s&&screen==='game'&&humanIds(s).includes(myId)&&!['over','cancelled','abandoned'].includes(s.phase)){
+    await tx(x=>doLeave(x,myId));
+    await applyResults(true);
+  }
+  goHome();
+}
+
+/* ---------- Төлөв өөрчлөгдсөний дараа ---------- */
+function afterState(){
+  const s=state; if(!s) return;
+  const mySeatI=mySeat();
+  const key=s.phase+':'+s.turn+':'+s.round;
+  if(key!==prevTurnKey){
+    if(s.phase==='playing'&&s.turn===mySeatI&&mySeatI>=0) beep(740,.14,'triangle');
+    if(s.phase==='arrange'&&prevTurnKey.split(':')[0]!=='arrange') beep(520,.2,'sine');
+    if(s.phase==='over') { beep(523,.15); setTimeout(()=>beep(659,.15),150); setTimeout(()=>beep(784,.25),300); }
+    prevTurnKey=key;
+  }
+  if(screen==='game') applyResults(false);
+}
+async function applyResults(force){
+  const s=state; if(!s||!profile||screen!=='game'||applyBusy) return;
+  if(!humanIds(s).includes(myId)) return;
+  const iOut=(s.out||[]).includes(myId), iLeft=hasLeft(s,myId);
+  if(!(s.phase==='over'||iOut||iLeft)) return;
+  if(!s.round) return;
+  const key=gameId+'#'+(s.matchNo||0);
+  if((profile.applied||[]).includes(key)) return;
+  let delta=0;
+  if(s.mode==='ranked') delta=(s.phase==='over'&&s.matchWinner===myId&&!iLeft)?1:-1;
+  const won=s.phase==='over'&&s.matchWinner===myId&&!iLeft;
+  applyBusy=true;
+  try{
+    await runTransaction(fdb,async t=>{
+      const r=doc(fdb,'users',myId); const d=(await t.get(r)).data();
+      if((d.applied||[]).includes(key)) return;
+      const up={applied:[...(d.applied||[]).slice(-29),key],games:(d.games||0)+1,wins:(d.wins||0)+(won?1:0)};
+      if(d.activeGame===gameId) up.activeGame=null;
+      if(s.mode==='ranked'){
+        up.rankPoints=Math.max(0,(d.rankPoints||0)+delta); up.rGames=(d.rGames||0)+1;
+        if(won) up.rWins=(d.rWins||0)+1;
+        up.lastDelta={g:key,d:delta,before:d.rankPoints||0,after:up.rankPoints};
+      }
+      t.update(r,up);
+    });
+  }catch(e){ console.error(e); }
+  finally{ applyBusy=false; }
+}
+
+/* ================== Найзууд ================== */
+async function loadFriends(){
+  const ids=(profile&&profile.friends)||[];
+  await Promise.all(ids.map(async id=>{ try{ const d=await getDoc(doc(fdb,'users',id)); if(d.exists()) friendsCache[id]={id,...d.data()}; }catch(e){} }));
+  friendsLoaded=true; render();
+}
+async function addFriend(code){
+  code=(code||'').trim().toUpperCase();
+  if(!code){ homeMsg='ID кодоо оруулна уу.'; homeErr=true; render(); return; }
+  if(code===profile.code){ homeMsg='Энэ бол таны өөрийн код.'; homeErr=true; render(); return; }
+  if((profile.friends||[]).length>=20){ homeMsg='Хамгийн ихдээ 20 найзтай байж болно.'; homeErr=true; render(); return; }
+  try{
+    const qs=await getDocs(query(collection(fdb,'users'),where('code','==',code),limit(1)));
+    if(qs.empty){ homeMsg='Ийм ID-тай тоглогч олдсонгүй.'; homeErr=true; render(); return; }
+    const d=qs.docs[0];
+    if((profile.friends||[]).includes(d.id)){ homeMsg='Аль хэдийн найз болсон байна.'; homeErr=true; render(); return; }
+    await updateDoc(doc(fdb,'users',myId),{friends:arrayUnion(d.id)});
+    friendsCache[d.id]={id:d.id,...d.data()};
+    homeMsg=`${d.data().name} найзаар нэмэгдлээ.`; homeErr=false; render();
+  }catch(e){ console.error(e); homeMsg='Алдаа гарлаа.'; homeErr=true; render(); }
+}
+async function removeFriend(id){ await updateDoc(doc(fdb,'users',myId),{friends:arrayRemove(id)}); delete friendsCache[id]; render(); }
+async function inviteFriend(id){
+  try{ await addDoc(collection(fdb,'users',id,'invites'),{from:myId,name:profile.name,code:gameId,ts:now()}); toast('Урилга илгээлээ'); }
+  catch(e){ console.error(e); toast('Урилга илгээж чадсангүй'); }
+}
+
+/* ================== Ганцаараа дасгал ================== */
+let onlineId=null;
+function startLocal(){
+  closeGame(); stopSearch();
+  onlineId=myId; myId='me'; screen='local';
+  const s=emptyState(); s.mode='casual';
+  s.seats=[{id:'me'},{id:'bot1',bot:true},{id:'bot2',bot:true},{id:'bot3',bot:true}];
+  s.names.me=profile?profile.name:'Та'; s.pts.me=profile?profile.rankPoints:0;
+  state=doDeal(s); render();
+}
+function endLocal(){ myId=onlineId; state=null; screen=myId?'home':(CONFIG_OK?'auth':'config'); render(); }
+
+/* ================== Цаг хэмжигч ба автомат үйлдэл ================== */
+function mySeat(){ if(!state) return -1; return state.seats.findIndex(x=>x&&x.id===myId); }
+function tick(){
+  updateTimers();
+  if(!state||(screen!=='game'&&screen!=='local')||writing) return;
+  const s=state, t=now();
+  if(lastActV===s.v) return;
+  let fn=null, due=Infinity;
+  if(s.phase==='playing'&&isBotSeat(s,s.turn)){ fn=botAct; due=(s.turnAt||0)+1000; }
+  else if(s.deadline){
+    const mine=s.phase==='playing'&&s.seats[s.turn]&&s.seats[s.turn].id===myId;
+    fn=timeoutAct; due=s.deadline+(screen==='local'||mine?150:1200+Math.random()*600);
+  }
+  if(fn&&t>=due){ const v=s.v; lastActV=v; tx(x=>{ if(x.v!==v) return null; return fn(x); }); }
+}
+function updateTimers(){
+  const t=now();
+  document.querySelectorAll('[data-dl]').forEach(el=>{
+    const dl=+el.dataset.dl, tot=+el.dataset.tot||TURN_MS, left=Math.max(0,dl-t);
+    if(el.classList.contains('tbar')){ el.firstElementChild.style.width=(100*left/tot)+'%'; el.classList.toggle('low',left<3500); }
+    else{ const sec=Math.ceil(left/1000); el.textContent=el.dataset.fmt==='m'?`${Math.floor(sec/60)}:${String(sec%60).padStart(2,'0')}`:sec; }
+  });
+  const qc=$('#qCount'); if(qc&&search) qc.textContent=search.count;
+  const se=$('#searchTime'); if(se&&search){ const sec=Math.floor((now()-search.since)/1000); se.textContent=`${Math.floor(sec/60)}:${String(sec%60).padStart(2,'0')}`; }
+}
+setInterval(tick,300);
+
+/* ================== Харагдац ================== */
+const BOTN=['🤖 Робот 1','🤖 Робот 2','🤖 Робот 3'];
+const MODE_MN={casual:'Энгийн',ranked:'Цолтой',friends:'Найзуудтай'};
+function cardHTML(c,extra=''){
+  return `<div class="card ${isRed(c)?'red':''} ${extra}" data-c="${c}"><div class="tl">${RANKS[rank(c)]}<small>${SUITS[suit(c)]}</small></div><div class="mid">${SUITS[suit(c)]}</div></div>`;
+}
+function nameOf(seat){
+  const p=state&&state.seats[seat]; if(!p) return '—';
+  if(p.bot) return BOTN[(+p.id.replace('bot','')-1)%3]||'🤖 Робот';
+  const n=(state.names||{})[p.id]||'Тоглогч';
+  return n+(p.id===myId?' (та)':'')+(hasLeft(state,p.id)?' (гарсан)':'');
+}
+function nameTag(seat){
+  const p=state.seats[seat]; if(!p) return '—';
+  if(p.bot) return esc(nameOf(seat));
+  return `${esc(nameOf(seat))} ${topBadge(p.id)}<div class="sub2">${rankChip((state.pts||{})[p.id]||0)}</div>`;
+}
+function scoreTxt(v){ v=v||0; return `<span class="${v>=20?'neg':''}">${v}/${LIMIT}</span>`; }
+function logText(e){
+  if(e.t==='left') return `🚪 ${esc((state.names||{})[e.id]||'Тоглогч')} тоглолтоос гарлаа`;
+  const n=esc(nameOf(e.s));
+  if(e.t==='play') return `${n}: ${e.c.map(c=>RANKS[rank(c)]+SUITS[suit(c)]).join(' ')}`;
+  if(e.t==='pass') return `${n} өнжлөө`;
+  if(e.t==='auto') return `⏱ ${n} — цаг дуусч автоматаар өнжлөө`;
+  if(e.t==='skip') return `⏭ ${n} өнжлөө — эхлүүлэх эрх дараагийн хүнд шилжлээ`;
+  if(e.t==='clear') return `Бүгд өнжлөө — ${n} шинээр эхлүүлнэ`;
+  if(e.t==='deal') return `🃏 Хөзөр тараалаа — ${n} эхэлнэ`;
+  if(e.t==='win') return `✅ ${n} тойрогт түрүүллээ`;
+  if(e.t==='out') return `❌ ${n} ${LIMIT} оноонд хүрч хасагдлаа`;
+  if(e.t==='match') return `🏆 ${n} тоглолтод яллаа!`;
+  return '';
+}
+const tbar=(dl,tot)=>`<div class="tbar" data-dl="${dl}" data-tot="${tot}"><i></i></div>`;
+const tsec=(dl,fmt)=>`<span data-dl="${dl}" ${fmt?'data-fmt="m"':''}></span>`;
+function confirmBox(text,ok,yes='Тийм'){
   const d=document.createElement('div'); d.className='overlay';
-  d.innerHTML=`<div class="panel"><p>${esc(text)}</p><div class="row"><button id="cy">Тийм</button><button class="ghost" id="cn">Үгүй</button></div></div>`;
+  d.innerHTML=`<div class="panel"><p>${esc(text)}</p><div class="row"><button id="cy">${esc(yes)}</button><button class="ghost" id="cn">Болих</button></div></div>`;
   document.body.appendChild(d);
   d.querySelector('#cy').onclick=()=>{d.remove();ok();};
   d.querySelector('#cn').onclick=()=>d.remove();
 }
 
-/* ================== Эхлэл ================== */
-let unsub=null;
-function connect(code,create){
-  roomCode=code; location.hash=code;
-  if(unsub){ unsub(); unsub=null; }
-  docRef=doc(fdb,'rooms',code);
-  mode='loading'; state=null; render();
-  let created=!create;
-  const go=()=>{
-    unsub=onSnapshot(docRef,snap=>{
-      if(mode==='local') return;
-      if(!snap.exists()){ if(created){ mode='notfound'; render(); } return; }
-      const ns=clone(snap.data().state||emptyState());
-      if(state&&ns.v<state.v&&snap.metadata.fromCache) return;
-      const prevPhase=state&&state.phase;
-      state=ns; mode='online'; Object.assign(names,state.names||{});
-      if(prevPhase!==state.phase){ selected.clear(); message=''; }
-      render(); scheduleBot();
-      if(myName&&(state.names||{})[myId]!==myName&&!writing){
-        tx(s2=>{ if((s2.names||{})[myId]===myName) return null; s2.names={...(s2.names||{}),[myId]:myName}; return s2; });
-      }
-    },err=>{ console.error(err); mode='error'; render(); });
-  };
-  if(create){
-    tx(s2=>{
-      if(s2.hostId) throw 'Код давхардлаа, дахин оролдоно уу.';
-      s2.hostId=myId; s2.names={[myId]:myName}; s2.seats[0]={id:myId}; return s2;
-    }).then(()=>{ created=true; go(); });
-  } else go();
+function render(){
+  if(dragging){ pendingRender=true; return; }
+  renderHeader();
+  const m=$('#main');
+  if(screen==='loading'){ m.innerHTML=`<div class="panel center note">Ачаалж байна…</div>`; return; }
+  if(screen==='config') return renderConfig();
+  if(screen==='error'){ m.innerHTML=`<div class="panel center"><div class="warn">Сервертэй холбогдож чадсангүй. Интернэтээ шалгаад хуудсаа дахин ачаална уу.</div></div>`; return; }
+  if(screen==='auth') return renderAuth();
+  if(screen==='home') return renderHome();
+  if(screen==='search') return renderSearch();
+  if(screen==='game'||screen==='local'){
+    if(!state){ m.innerHTML=`<div class="panel center note">Холбогдож байна…</div>`; return; }
+    return state.phase==='lobby'?renderLobby():renderGame();
+  }
 }
+function renderHeader(){
+  const h=$('#hdr');
+  let right='';
+  if(profile&&myId&&myId!=='me'&&screen==='home'){
+    const r=rankInfo(profile.rankPoints);
+    right=`<button class="chipbtn" id="hdrProf">${r.e} ${esc(profile.name)} ${topBadge(myId)}</button>`;
+  }else if(screen==='game'&&state){
+    right=`<span class="note">${MODE_MN[state.mode]||''}${state.mode==='friends'?' · Өрөө '+esc(gameId):''}${state.round?' · '+state.round+'-р тойрог':''}</span>`;
+  }else if(screen==='local') right=`<span class="note">Дасгал · роботуудтай</span>`;
+  h.innerHTML=`<h1>🃏 Монгол <span>13</span></h1><div class="row">${right}</div>`;
+  const hp=$('#hdrProf'); if(hp) hp.onclick=()=>{ tab='profile'; render(); };
+}
+
+/* ---------- Тохиргоо дутуу ---------- */
+function renderConfig(){
+  $('#main').innerHTML=`<div class="panel narrow"><div class="warn">Firebase тохиргоо хийгдээгүй байна. <b>index.html</b> файлын эхэнд байгаа <code>firebaseConfig</code>-д өөрийн утгуудаа хуулна уу.</div>
+    <button class="ghost" id="local" style="margin-top:12px">Роботуудтай дасгал хийх</button><div style="margin-top:12px">${RULES}</div></div>`;
+  $('#local').onclick=startLocal;
+}
+
+/* ---------- Нэвтрэх / бүртгүүлэх ---------- */
+function renderAuth(){
+  const v=authView;
+  $('#main').innerHTML=`<div class="panel narrow">
+    <div class="tabs2"><button class="${v==='login'?'on':''}" data-av="login">Нэвтрэх</button><button class="${v==='register'?'on':''}" data-av="register">Бүртгүүлэх</button></div>
+    <form id="af" class="col">
+      ${v==='register'?`<label class="note">Тоглогчийн нэр<input id="aName" maxlength="16" class="inp" placeholder="Жишээ: Бат" required></label>`:''}
+      <label class="note">Имэйл<input id="aEmail" type="email" class="inp" autocomplete="email" required></label>
+      ${v!=='forgot'?`<label class="note">Нууц үг<input id="aPass" type="password" class="inp" autocomplete="${v==='register'?'new-password':'current-password'}" minlength="6" required></label>`:''}
+      <button type="submit" ${authBusy?'disabled':''}>${v==='login'?'Нэвтрэх':v==='register'?'Бүртгүүлэх':'Сэргээх холбоос илгээх'}</button>
+      <div class="msg ${authMsg.startsWith('✓')?'':'err'}">${esc(authMsg)}</div>
+      ${v==='login'?`<a href="#" id="forgot" class="lnk">Нууц үгээ мартсан уу?</a>`:''}
+      ${v==='forgot'?`<a href="#" id="back" class="lnk">← Нэвтрэх рүү буцах</a>`:''}
+    </form>
+    <hr class="sep"><button class="ghost" id="local">Бүртгэлгүйгээр роботуудтай дасгал хийх</button>
+    <div style="margin-top:10px">${RULES}</div></div>`;
+  document.querySelectorAll('[data-av]').forEach(b=>b.onclick=()=>{authView=b.dataset.av;authMsg='';render();});
+  const f=$('#forgot'); if(f) f.onclick=e=>{e.preventDefault();authView='forgot';authMsg='';render();};
+  const bk=$('#back'); if(bk) bk.onclick=e=>{e.preventDefault();authView='login';authMsg='';render();};
+  $('#local').onclick=startLocal;
+  $('#af').onsubmit=async e=>{
+    e.preventDefault(); if(authBusy) return;
+    const email=$('#aEmail').value.trim(), pass=$('#aPass')?$('#aPass').value:'', name=$('#aName')?$('#aName').value.trim():'';
+    authBusy=true; authMsg=''; render();
+    try{
+      if(v==='login') await signInWithEmailAndPassword(auth,email,pass);
+      else if(v==='register'){
+        if(!name) throw {code:'x',message:'Нэрээ оруулна уу.'};
+        const cred=await createUserWithEmailAndPassword(auth,email,pass);
+        await updateProfile(cred.user,{displayName:name});
+        await ensureProfile(cred.user,name);
+        try{ await sendEmailVerification(cred.user); }catch(_){}
+      } else { await sendPasswordResetEmail(auth,email); authMsg='✓ Нууц үг сэргээх холбоосыг имэйл рүү тань илгээлээ.'; }
+    }catch(err){ authMsg=err.code==='x'?err.message:authErr(err); }
+    authBusy=false; if(screen==='auth') render();
+  };
+}
+
+/* ---------- Нүүр ---------- */
+function renderHome(){
+  if(!profile){ $('#main').innerHTML=`<div class="panel center note">Профайл ачаалж байна…</div>`; return; }
+  const tabs=[['play','🎮 Тоглох'],['friends','👥 Найзууд'],['top','🏆 Топ 10'],['profile','👤 Профайл']];
+  let html=`<div class="tabbar">${tabs.map(([k,l])=>`<button class="${tab===k?'on':''}" data-tab="${k}">${l}</button>`).join('')}</div>`;
+  if(homeMsg) html+=`<div class="msg ${homeErr?'err':''}" style="margin:6px 0">${esc(homeMsg)}</div>`;
+  if(tab==='play') html+=homePlay();
+  if(tab==='friends') html+=homeFriends();
+  if(tab==='top') html+=homeTop();
+  if(tab==='profile') html+=homeProfile();
+  $('#main').innerHTML=html;
+  document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{ tab=b.dataset.tab; homeMsg=''; if(tab==='friends') loadFriends(); render(); });
+  bindHome();
+}
+function rankCard(p,big){
+  const r=rankInfo(p);
+  return `<div class="rankcard ${big?'big':''}"><div class="remoji">${r.e}</div><div><div class="rname">${esc(r.label)}</div>${starsHTML(p)}</div></div>`;
+}
+function homePlay(){
+  const p=profile;
+  let h=`<div class="panel profsum"><div><div class="pname">${esc(p.name)} ${topBadge(myId)}</div><div class="note">ID: <b>${esc(p.code)}</b></div></div>${rankCard(p.rankPoints)}</div>`;
+  if(p.activeGame) h+=`<div class="invite">⏳ Дуусаагүй тоглолт байна. Буцаж орохгүй бол таны ээлж бүрт цаг дуусч автоматаар өнжинө.<span class="grow"></span><button id="rejoin">Буцаж орох</button></div>`;
+  invites.forEach(iv=>{ h+=`<div class="invite">📨 <b>${esc(iv.name)}</b> таныг өрөөндөө урьж байна <span class="grow"></span><button data-inv="${iv.id}" data-code="${esc(iv.code)}">Нэгдэх</button><button class="ghost" data-invx="${iv.id}">✕</button></div>`; });
+  h+=`<div class="modes">
+    <div class="mode"><div class="mt">🎲 Энгийн</div><div class="note">Санамсаргүй хүмүүстэй тоглоно. Цолд нөлөөлөхгүй.</div><button data-search="casual">Тоглогч хайх</button></div>
+    <div class="mode hl"><div class="mt">🏅 Цолтой</div><div class="note">Ойролцоо цолтой хүмүүстэй тоглоно. Хожвол +1 од, хожигдвол −1 од.</div><button data-search="ranked">Тоглогч хайх</button></div>
+    <div class="mode"><div class="mt">👥 Найзуудтай</div><div class="note">Өрөө үүсгээд найзуудаа урина. Цолд нөлөөлөхгүй.</div>
+      <button id="mkRoom">Өрөө үүсгэх</button>
+      <div class="row"><input id="roomCode" maxlength="5" placeholder="Өрөөний код" class="inp up" style="flex:1;margin:0"><button class="ghost" id="joinRoom">Нэгдэх</button></div></div>
+  </div>
+  <div class="row center"><button class="ghost" id="local">🤖 Роботуудтай дасгал</button></div>
+  <div class="panel" style="margin-top:10px">${RULES}</div>`;
+  return h;
+}
+function homeFriends(){
+  const ids=profile.friends||[];
+  let h=`<div class="panel"><div class="row sb"><div>Таны ID: <b class="code">${esc(profile.code)}</b></div><button class="ghost sm" id="copyId">Хуулах</button></div>
+    <div class="row" style="margin-top:10px"><input id="fCode" maxlength="6" class="inp up" placeholder="Найзын ID (6 тэмдэгт)" style="flex:1;margin:0"><button id="addF">Найз нэмэх</button></div></div>
+    <div class="panel"><div class="row sb"><b>Найзууд (${ids.length}/20)</b><button class="ghost sm" id="refF">↻</button></div>`;
+  if(!ids.length) h+=`<p class="note">Одоогоор найз алга. Найзынхаа ID кодыг оруулж нэмээрэй.</p>`;
+  else if(!friendsLoaded) h+=`<p class="note">Ачаалж байна…</p>`;
+  else h+=`<div class="flist">${ids.map(id=>{ const f=friendsCache[id]; if(!f) return '';
+      const on=now()-tsMs(f.lastSeen)<150000;
+      return `<div class="frow"><span class="dot ${on?'on':''}" title="${on?'Онлайн':'Офлайн'}"></span><div class="grow"><b>${esc(f.name)}</b> ${topBadge(id)}<div class="sub2">${rankChip(f.rankPoints)} · ID ${esc(f.code)}</div></div><button class="ghost sm" data-rmf="${id}">Хасах</button></div>`; }).join('')}</div>`;
+  return h+`</div>`;
+}
+function homeTop(){
+  const medal=i=>['🥇','🥈','🥉'][i]||`<b>${i+1}</b>`;
+  let h=`<div class="panel"><b>🏆 Топ 10 — цолоор</b><div class="toplist">`;
+  h+=top10.map((u,i)=>`<div class="trow ${u.id===myId?'me':''}"><span class="tpos">${medal(i)}</span><div class="grow"><b>${esc(u.name)}</b>${u.id===myId?' <span class="note">(та)</span>':''}<div class="sub2">${rankChip(u.rankPoints)} ${starsHTML(u.rankPoints)}</div></div><span class="note">${u.rWins||0}/${u.rGames||0} хожил</span></div>`).join('')||'<p class="note">Одоогоор хоосон байна.</p>';
+  h+=`</div>`;
+  if(!topPos(myId)) h+=`<p class="note" style="margin-top:10px">Таны цол: ${rankChip(profile.rankPoints)} — Цолтой горимоор тоглож топ 10-д орж, 🏅 тэмдэг аваарай.</p>`;
+  return h+`</div>`;
+}
+function homeProfile(){
+  const p=profile, r=rankInfo(p.rankPoints), u=auth&&auth.currentUser;
+  const wr=p.rGames?Math.round(100*(p.rWins||0)/p.rGames):0;
+  const toNext=r.max?`${r.max-r.stars} од дутуу — дараагийн цол руу`:'Хамгийн дээд цол!';
+  return `<div class="panel"><div class="row sb"><div><div class="pname">${esc(p.name)} ${topBadge(myId)}</div><div class="note">ID: <b>${esc(p.code)}</b> · ${esc(u?u.email:'')}</div></div><button class="ghost sm" id="editName">Нэр солих</button></div>
+    ${topPos(myId)?`<div class="topnote">🏅 Та топ 10-ын <b>${topPos(myId)}-р</b> байранд байна!</div>`:''}
+    <div style="margin:14px 0">${rankCard(p.rankPoints,true)}<div class="note" style="margin-top:6px">${toNext}</div></div>
+    <div class="stats"><div><b>${p.games||0}</b><span>Нийт тоглолт</span></div><div><b>${p.wins||0}</b><span>Нийт хожил</span></div><div><b>${p.rWins||0}/${p.rGames||0}</b><span>Цолтой хожил</span></div><div><b>${wr}%</b><span>Хожлын хувь</span></div></div>
+    ${u&&!u.emailVerified?`<div class="note" style="margin-top:10px">✉️ Имэйл баталгаажаагүй байна. <a href="#" id="verify" class="lnk">Баталгаажуулах имэйл дахин илгээх</a></div>`:''}
+    <div class="row" style="margin-top:14px"><label class="row note"><input type="checkbox" id="snd" ${soundOn?'checked':''}> Дуу</label><span class="grow"></span><button class="danger" id="logout">Гарах</button></div>
+    <details style="margin-top:12px"><summary>Цолны шат</summary><div class="ladder">${TIERS.map(t=>`<div>${t.e} <b>${t.n}</b> III → II → I <span class="note">(тус бүр ${t.s} од)</span></div>`).join('')}<div>👑 <b>Аварга</b> <span class="note">(хязгааргүй од)</span></div></div></details></div>`;
+}
+function bindHome(){
+  document.querySelectorAll('[data-search]').forEach(b=>b.onclick=()=>{ homeMsg=''; startSearch(b.dataset.search); });
+  const mk=$('#mkRoom'); if(mk) mk.onclick=()=>{ mk.disabled=true; createRoom(); };
+  const jr=$('#joinRoom'); if(jr) jr.onclick=()=>joinRoom($('#roomCode').value);
+  const lo=$('#local'); if(lo) lo.onclick=startLocal;
+  const rj=$('#rejoin'); if(rj) rj.onclick=()=>openGame(profile.activeGame);
+  document.querySelectorAll('[data-inv]').forEach(b=>b.onclick=()=>{ deleteDoc(doc(fdb,'users',myId,'invites',b.dataset.inv)).catch(()=>{}); joinRoom(b.dataset.code); });
+  document.querySelectorAll('[data-invx]').forEach(b=>b.onclick=()=>deleteDoc(doc(fdb,'users',myId,'invites',b.dataset.invx)).catch(()=>{}));
+  const cp=$('#copyId'); if(cp) cp.onclick=async()=>{ try{ await navigator.clipboard.writeText(profile.code); cp.textContent='✓'; }catch(e){} };
+  const af=$('#addF'); if(af) af.onclick=()=>addFriend($('#fCode').value);
+  const rf=$('#refF'); if(rf) rf.onclick=()=>{ friendsLoaded=false; render(); loadFriends(); };
+  document.querySelectorAll('[data-rmf]').forEach(b=>b.onclick=()=>confirmBox('Найзаас хасах уу?',()=>removeFriend(b.dataset.rmf),'Хасах'));
+  const en=$('#editName'); if(en) en.onclick=()=>{
+    const d=document.createElement('div'); d.className='overlay';
+    d.innerHTML=`<div class="panel"><b>Шинэ нэр</b><input id="nn" maxlength="16" class="inp" value="${esc(profile.name)}"><div class="row" style="margin-top:10px"><button id="ny">Хадгалах</button><button class="ghost" id="nc">Болих</button></div></div>`;
+    document.body.appendChild(d);
+    d.querySelector('#nc').onclick=()=>d.remove();
+    d.querySelector('#ny').onclick=async()=>{ const v=d.querySelector('#nn').value.trim().slice(0,16); if(v){ await updateDoc(doc(fdb,'users',myId),{name:v}); } d.remove(); };
+  };
+  const vf=$('#verify'); if(vf) vf.onclick=async e=>{ e.preventDefault(); try{ await sendEmailVerification(auth.currentUser); toast('Имэйл илгээлээ'); }catch(err){ toast(authErr(err)); } };
+  const sn=$('#snd'); if(sn) sn.onchange=()=>{ soundOn=sn.checked; try{localStorage.setItem('m13sound',soundOn?'1':'0');}catch(e){} };
+  const lg=$('#logout'); if(lg) lg.onclick=()=>confirmBox('Бүртгэлээсээ гарах уу?',()=>signOut(auth),'Гарах');
+}
+
+/* ---------- Хайлт ---------- */
+function renderSearch(){
+  const s=search; if(!s) return goHome();
+  const casualBots=s.mode==='casual';
+  $('#main').innerHTML=`<div class="panel narrow center">
+    <div class="spinner"></div>
+    <h2 style="margin:6px 0">${s.mode==='ranked'?'🏅 Цолтой':'🎲 Энгийн'} — тоглогч хайж байна</h2>
+    <div class="big" id="searchTime">0:00</div>
+    <p class="note">Дараалалд <b id="qCount">${s.count}</b> хүн байна. 4 хүн бүрдмэгц тоглолт эхэлнэ.<br>${s.mode==='ranked'?'1 минутаас удвал байгаа 2–3 хүнээрээ эхэлнэ. Цолтой горимд робот оролцохгүй.':'1 минутаас удвал байгаа хүмүүсээрээ, сул суудалд робот нэмж эхэлнэ.'}</p>
+    ${s.mode==='ranked'?`<p class="note">Таны цолтой ойролцоо хүмүүсийг хайж байна: ${rankChip(profile.rankPoints)}</p>`:''}
+    <div class="row center">${casualBots?`<button class="ghost" id="botsNow">Роботуудтай шууд эхлэх</button>`:''}<button class="danger" id="cancelS">Цуцлах</button></div></div>`;
+  updateTimers();
+  $('#cancelS').onclick=()=>{ stopSearch(); goHome(); };
+  const bn=$('#botsNow'); if(bn) bn.onclick=async()=>{ bn.disabled=true; try{ await createMatch([{uid:myId,name:profile.name,mode:'casual',p:profile.rankPoints||0}]); }catch(e){ bn.disabled=false; } };
+}
+
+/* ---------- Найзын өрөөний лобби ---------- */
+function renderLobby(){
+  const s=state, me=mySeat(), seated=me>=0, n=active(s).length, host=isHost();
+  let html=`<div class="panel"><div class="row sb"><div>Өрөөний код: <b class="code big2">${esc(gameId)}</b></div>
+    <div class="row"><button class="ghost sm" id="copyLink">Линк хуулах</button><button class="ghost sm" id="leaveRoom">Гарах</button></div></div>
+    <div class="seats">`;
+  for(let i=0;i<4;i++){
+    const p=s.seats[i];
+    if(p){
+      html+=`<div class="seat filled"><div class="who">${nameTag(i)}</div><div class="sub">${p.bot?'Компьютер':(p.id===s.hostId?'👑 Өрөөний эзэн':'Тоглогч')}</div>
+      ${p.id===myId&&!host?`<button class="ghost sm" data-leave="${i}">Суудлаас босох</button>`
+        :(p.bot&&(seated||host))?`<button class="ghost sm" data-leave="${i}">Робот хасах</button>`
+        :(!p.bot&&host&&p.id!==myId)?`<button class="danger sm" data-leave="${i}">Хасах</button>`:''}</div>`;
+    }else{
+      html+=`<div class="seat"><div class="who note">Сул суудал</div>
+      <div class="row">${!seated?`<button class="sm" data-sit="${i}">Энд суух</button>`:''}${seated?`<button class="ghost sm" data-bot="${i}">+ Робот</button>`:''}</div></div>`;
+    }
+  }
+  html+=`</div><div class="row">${host?`<button id="start" ${n<2?'disabled':''}>Тоглолт эхлүүлэх</button>`:`<span class="note">Өрөөний эзэн тоглолтыг эхлүүлэхийг хүлээж байна…</span>`}</div>
+    ${message?`<div class="msg ${msgErr?'err':''}">${esc(message)}</div>`:''}</div>`;
+  const fids=(profile&&profile.friends)||[];
+  if(fids.length){
+    html+=`<div class="panel"><b>Найзаа урих</b><div class="flist">${fids.map(id=>{ const f=friendsCache[id]; if(!f) return '';
+      const on=now()-tsMs(f.lastSeen)<150000; const inRoom=s.seats.some(x=>x&&x.id===id);
+      return `<div class="frow"><span class="dot ${on?'on':''}"></span><div class="grow"><b>${esc(f.name)}</b><div class="sub2">${rankChip(f.rankPoints)}</div></div>${inRoom?'<span class="note">Өрөөнд байна</span>':`<button class="ghost sm" data-invite="${id}">Урих</button>`}</div>`; }).join('')}</div></div>`;
+    if(!friendsLoaded) loadFriends();
+  }
+  html+=`<div class="panel">${RULES}</div>`;
+  $('#main').innerHTML=html;
+  document.querySelectorAll('[data-sit]').forEach(b=>b.onclick=()=>{const i=+b.dataset.sit;tx(x=>{
+    if(x.phase!=='lobby') throw 'Тоглолт эхэлчихсэн байна.';
+    if(x.seats.some(q=>q&&q.id===myId)) return null;
+    if(x.seats[i]) throw 'Энэ суудалд хүн суучихсан.';
+    x.seats[i]={id:myId}; x.names[myId]=profile.name; x.pts[myId]=profile.rankPoints||0; return x;});});
+  document.querySelectorAll('[data-bot]').forEach(b=>b.onclick=()=>{const i=+b.dataset.bot;tx(x=>{
+    if(x.seats[i]) return null;
+    const used=x.seats.filter(q=>q&&q.bot).map(q=>q.id);
+    const id=['bot1','bot2','bot3'].find(q=>!used.includes(q)); if(!id) return null;
+    x.seats[i]={id,bot:true}; return x;});});
+  document.querySelectorAll('[data-leave]').forEach(b=>b.onclick=()=>{const i=+b.dataset.leave;tx(x=>{ if(x.phase!=='lobby') return null; x.seats[i]=null; return x;});});
+  document.querySelectorAll('[data-invite]').forEach(b=>b.onclick=()=>{ b.disabled=true; inviteFriend(b.dataset.invite); });
+  const st=$('#start'); if(st) st.onclick=()=>tx(x=>{ if(x.phase!=='lobby') return null; return doDeal(x); });
+  $('#copyLink').onclick=async e=>{ const url=location.origin+location.pathname+'#'+gameId; try{ await navigator.clipboard.writeText(url); e.target.textContent='Хуулагдлаа ✓'; }catch(_){ e.target.textContent=url; } };
+  $('#leaveRoom').onclick=async()=>{ if(seated) await tx(x=>doLeave(x,myId)); goHome(); };
+}
+function isHost(){ return screen==='local'||(!!state&&state.hostId===myId); }
+
+/* ---------- Тоглоомын ширээ ---------- */
+function renderGame(){
+  const s=state, me=mySeat(), seats=active(s);
+  const order=me>=0?[0,1,2,3].map(k=>(me+k)%4).filter(i=>s.seats[i]&&i!==me):seats;
+  let html='';
+  // Дээд мөр
+  html+=`<div class="row sb gbar"><div class="note">${s.phase==='arrange'?'🃏 Хөзрөө янзлах хугацаа':s.phase==='playing'?'Ээлж бүр '+TURN_MS/1000+' секунд':''}</div>
+    <button class="ghost sm" id="exitG">${screen==='local'?'Дуусгах':'🚪 Гарах'}</button></div>`;
+  html+=`<div class="opps">`;
+  order.forEach(i=>{
+    const p=s.seats[i], cnt=(s.hands[i]||[]).length, out=isOut(s,i), turn=s.phase==='playing'&&s.turn===i;
+    const arrDone=s.phase==='arrange'&&(isBotSeat(s,i)||(s.arranged||[]).includes(p.id));
+    html+=`<div class="opp ${turn?'turn':''} ${s.passed.includes(i)||out?'passed':''}">
+      <div class="nm">${nameTag(i)}</div>
+      <div class="backs">${out?'<span class="note">❌ хасагдсан</span>':Array(Math.min(cnt,13)).fill('<div class="back"></div>').join('')}</div>
+      <div class="cnt">${out?'':cnt+' хөзөр · '}${scoreTxt(s.scores[p.id])} оноо${s.passed.includes(i)?' · өнжсөн':''}${s.phase==='arrange'&&!out?(arrDone?' · ✓ бэлэн':' · янзалж байна…'):''}</div>
+      ${turn?tbar(s.deadline,TURN_MS):''}</div>`;
+  });
+  html+=`</div>`;
+  // Ширээ
+  html+=`<div class="table">`;
+  if(s.table){
+    html+=`<div class="lbl">${esc(nameOf(s.table.by))} — ${TYPE_MN[s.table.type]||''}</div><div class="cards">${s.table.cards.map(c=>cardHTML(c)).join('')}</div>`;
+  }else if(s.phase==='playing'){
+    html+=`<div class="lbl">${esc(nameOf(s.turn))} шинээр эхлүүлнэ — дурын хослол буулгана</div>`;
+  }else if(s.phase==='arrange'){
+    html+=`<div class="lbl">Хөзрөө янзлаарай. Тоглолт эхлэхэд: <b class="gold">${tsec(s.deadline,1)}</b></div>`;
+  }
+  html+=`</div>`;
+  // Миний хэсэг
+  if(me>=0&&isOut(s,me)){
+    html+=`<div class="panel center">❌ Та ${LIMIT} оноонд хүрч хасагдлаа (${scoreTxt(s.scores[myId])}).<br><span class="note">Тоглолт дуустал үргэлжлүүлэн харж болно, эсвэл гарч болно.</span>
+      <div class="row center" style="margin-top:8px"><button class="ghost" id="exitG2">Гарах</button></div></div>`;
+  }else if(me>=0&&s.hands[me]){
+    const hand=orderedHand(s.hands[me]||[], s.deal);
+    const myTurn=s.phase==='playing'&&s.turn===me, arr=s.phase==='arrange', iArr=(s.arranged||[]).includes(myId);
+    const sel=[...selected], cb=combo(sel);
+    let hint='';
+    if(sel.length) hint=cb?(TYPE_MN[cb.type]+(s.table&&!beats(cb,s.table)?' — дарахгүй':'')):'Буруу хослол';
+    html+=`<div class="panel me ${myTurn?'turn':''}">
+      <div class="mebar"><div><b>${esc(nameOf(me))}</b> ${topBadge(myId)} <span class="note">· ${hand.length} хөзөр · ${scoreTxt(s.scores[myId])} оноо</span></div>
+      <div class="note">${myTurn?`<span class="gold b">Таны ээлж! ${tsec(s.deadline)} сек</span>`:arr?(iArr?'✓ Бэлэн. Бусдыг хүлээж байна…':`<span class="gold b">Янзлах: ${tsec(s.deadline,1)}</span>`):(s.phase==='playing'?esc(nameOf(s.turn))+'-ийн ээлж…':'')}</div></div>
+      ${myTurn?tbar(s.deadline,TURN_MS):arr?tbar(s.deadline,ARRANGE_MS):''}
+      <div class="hand" id="hand">${hand.map(c=>cardHTML(c,selected.has(c)?'sel':'')).join('')}</div>
+      <div class="msg ${msgErr?'err':''}">${esc(message||hint)}</div>
+      <div class="row center">
+        ${arr?`<button id="arrDone" ${iArr?'disabled':''}>✓ Бэлэн</button>`:`
+        <button id="play" ${!myTurn||!sel.length?'disabled':''}>Буулгах</button>
+        <button class="ghost" id="pass" ${!myTurn||!s.table?'disabled':''}>Өнжих</button>`}
+        <button class="ghost" id="clear" ${!sel.length?'disabled':''}>Сонголт арилгах</button>
+      </div>
+      <div class="row center" style="margin-top:8px"><span class="note">Хөзрөө чирж байрыг нь солино ·</span>
+        <button class="ghost xs" id="sortRank">Тоогоор</button><button class="ghost xs" id="sortSuit">Дүрсээр</button></div></div>`;
+  }else if(me<0){
+    html+=`<div class="panel note center">Та энэ тоглолтыг харж байна.</div>`;
+  }
+  html+=`<div class="panel"><b>Явц</b><div class="log">${[...(s.log||[])].reverse().map(e=>`<div>${logText(e)}</div>`).join('')}</div><div style="margin-top:8px">${RULES}</div></div>`;
+  html+=phaseOverlay();
+  $('#main').innerHTML=html;
+  updateTimers();
+  bindGame();
+}
+function playersList(s,showReady){
+  return `<div class="plist">${s.seats.map((p,i)=>p?`<div class="prow"><div class="grow">${nameTag(i)}</div>${showReady?(p.bot?'<span class="note">🤖</span>':s.ready.includes(p.id)?'<span class="ok">✓ Бэлэн</span>':hasLeft(s,p.id)?'<span class="neg">гарсан</span>':'<span class="note">⏳</span>'):''}</div>`:'').join('')}</div>`;
+}
+function phaseOverlay(){
+  const s=state, me=mySeat();
+  if(s.phase==='ready'){
+    const iReady=s.ready.includes(myId);
+    return `<div class="overlay"><div class="panel center"><h2>🎮 Тоглогчид олдлоо!</h2><p class="note">${MODE_MN[s.mode]} горим · Бүгд <b>${tsec(s.deadline)}</b> секундэд бэлэн болох ёстой</p>
+      ${tbar(s.deadline,READY_MS)}${playersList(s,true)}
+      <div class="row center" style="margin-top:12px">${me>=0?`<button id="readyBtn" ${iReady?'disabled':''}>${iReady?'✓ Бэлэн — хүлээж байна':'Бэлэн'}</button>`:''}<button class="ghost" id="declineBtn">Татгалзах</button></div></div></div>`;
+  }
+  if(s.phase==='loading'){
+    return `<div class="overlay"><div class="panel center"><div class="spinner"></div><h2>Тоглолт эхэлж байна…</h2>${playersList(s,false)}
+      <p class="note">${s.mode==='ranked'?'🏅 Цолтой: хожвол +1 од, хожигдвол −1 од':s.mode==='casual'?'🎲 Энгийн: цолд нөлөөлөхгүй':''}</p></div></div>`;
+  }
+  if(s.phase==='cancelled'||s.phase==='abandoned'){
+    return `<div class="overlay"><div class="panel center"><h2>${s.phase==='cancelled'?'Тоглолт цуцлагдлаа':'Тоглолт дууслаа'}</h2>
+      <p class="note">${s.phase==='cancelled'?'Бүх тоглогч бэлэн болоогүй тул тоглолт эхэлсэнгүй.':'Бүх тоглогч гарсан байна.'}</p>
+      <div class="row center">${s.mode!=='friends'&&screen==='game'?`<button id="againSearch">Дахин хайх</button>`:''}<button class="ghost" id="toHome">Нүүр хуудас</button></div></div></div>`;
+  }
+  if((s.phase==='ended'||s.phase==='over')&&s.results){
+    const r=s.results, mo=s.phase==='over', mw=r.matchWinnerSeat;
+    const sc=k=>s.scores[k]||0;
+    let rk='';
+    if(mo&&s.mode==='ranked'&&profile&&profile.lastDelta&&profile.lastDelta.g===gameId+'#'+(s.matchNo||0)){
+      const ld=profile.lastDelta;
+      rk=`<div class="rankdelta ${ld.d>0?'up':'down'}">${ld.d>0?'⬆️ +1 од':'⬇️ −1 од'}<div>${rankChip(ld.before)} → ${rankChip(ld.after)}</div>${starsHTML(ld.after)}</div>`;
+    }
+    const host=isHost()||s.mode!=='friends';
+    return `<div class="overlay"><div class="panel">
+      ${mo&&mw>=0?`<h2 class="center">🏆 ${esc(nameOf(mw))} яллаа!</h2>${r.byLeave?'<p class="note center">Бусад тоглогчид тоглолтоос гарсан.</p>':''}`:`<h2>✅ ${esc(nameOf(r.win))} — ${s.round}-р тойрогт түрүүллээ</h2>`}
+      ${rk}
+      ${s.table&&s.table.cards&&!r.byLeave?`<div class="note" style="margin:6px 0 4px">${esc(nameOf(r.win))}-ийн сүүлд буулгасан хөзөр (${TYPE_MN[s.table.type]||''}):</div><div class="cards" style="justify-content:flex-start;gap:4px;margin-bottom:10px">${s.table.cards.map(c=>cardHTML(c)).join('')}</div>`:''}
+      <table class="scores"><tr><th>Тоглогч</th><th class="num">Энэ тойрог</th><th class="num">Нийт / ${LIMIT}</th></tr>
+      <tr><td>${esc(nameOf(r.win))}</td><td class="num pos">0</td><td class="num">${sc(s.seats[r.win].id)}</td></tr>
+      ${r.res.map(x=>`<tr><td>${esc(nameOf(x.s))}${x.out?' <span class="neg">❌ хасагдлаа</span>':''}<div class="note">${x.left} хөзөр үлдсэн${x.notes.length?' · '+x.notes.join(', '):''}</div></td><td class="num neg">+${x.p}</td><td class="num ${sc(s.seats[x.s].id)>=LIMIT?'neg':''}">${sc(s.seats[x.s].id)}</td></tr>`).join('')}
+      </table>
+      <div class="row" style="margin-top:14px">
+      ${!mo&&s.mode!=='friends'?`<span class="note">Дараагийн тойрог <b>${tsec(s.deadline)}</b> секундийн дараа…</span>`:''}
+      ${!mo&&s.mode==='friends'?(isHost()?`<button id="again">Дараагийн тойрог</button>`:`<span class="note">Өрөөний эзэн дараагийн тойргийг эхлүүлэхийг хүлээж байна…</span>`):''}
+      ${mo&&s.mode==='friends'&&isHost()?`<button id="newMatch">Шинэ тоглолт</button><button class="ghost" id="toLobby">Өрөө рүү</button>`:''}
+      ${mo&&screen==='game'&&s.mode!=='friends'?`<button id="againSearch">Дахин тоглох</button>`:''}
+      ${mo&&screen==='local'?`<button id="localAgain">Дахин тоглох</button>`:''}
+      ${mo?`<button class="ghost" id="toHome">Нүүр хуудас</button>`:''}
+      </div></div></div>`;
+  }
+  return '';
+}
+function bindGame(){
+  const s=state, me=mySeat();
+  const hd=$('#hand'); if(hd) setupHandDrag(hd);
+  const sr=$('#sortRank'); if(sr) sr.onclick=()=>{ handOrder.sort((a,b)=>a-b); render(); };
+  const su=$('#sortSuit'); if(su) su.onclick=()=>{ handOrder.sort((a,b)=>suit(a)-suit(b)||a-b); render(); };
+  const pb=$('#play'); if(pb) pb.onclick=()=>{const cards=[...selected]; message=''; tx(x=>doPlay(x,me,cards)).then(()=>{ if(!msgErr) selected.clear(); render(); });};
+  const ps=$('#pass'); if(ps) ps.onclick=()=>{message=''; selected.clear(); tx(x=>doPass(x,me));};
+  const cl=$('#clear'); if(cl) cl.onclick=()=>{selected.clear(); message=''; render();};
+  const ad=$('#arrDone'); if(ad) ad.onclick=()=>tx(x=>doArranged(x,myId));
+  const rb=$('#readyBtn'); if(rb) rb.onclick=()=>tx(x=>doReady(x,myId));
+  const db=$('#declineBtn'); if(db) db.onclick=()=>leaveGame();
+  const exitFn=()=>{
+    if(screen==='local') return endLocal();
+    const alive=me>=0&&!isOut(s,me)&&!['over','cancelled','abandoned','lobby'].includes(s.phase);
+    if(!alive) return leaveGame();
+    confirmBox((s.mode==='ranked'?'Тоглолтоос гарвал хожигдсонд тооцогдож 1 од алдана. ':'')+'Гарсны дараа таны хөзөр гартаа үлдэж, ээлж бүрт автоматаар өнжинө. Гарах уу?',leaveGame,'Гарах');
+  };
+  const ex=$('#exitG'); if(ex) ex.onclick=exitFn;
+  const ex2=$('#exitG2'); if(ex2) ex2.onclick=exitFn;
+  const th=$('#toHome'); if(th) th.onclick=()=>screen==='local'?endLocal():leaveGame();
+  const as=$('#againSearch'); if(as) as.onclick=()=>{ const m=s.mode; goHome(); startSearch(m); };
+  const la=$('#localAgain'); if(la) la.onclick=startLocal;
+  const ag=$('#again'); if(ag) ag.onclick=()=>{ selected.clear(); tx(x=>x.phase==='ended'?doDeal(x):null); };
+  const nm=$('#newMatch'); if(nm) nm.onclick=()=>{ selected.clear(); tx(x=>x.phase==='over'?doDeal(x):null); };
+  const tl=$('#toLobby'); if(tl) tl.onclick=()=>tx(x=>{ x.phase='lobby'; x.hands={}; x.table=null; x.turn=-1; x.passed=[]; x.results=null; x.deadline=0; x.out=[]; x.left=[]; return x; });
+}
+
+/* ================== Эхлүүлэх ================== */
 render();
-(async()=>{
-  if(!CONFIG_OK){ mode='config'; render(); return; }
+if(!CONFIG_OK){ screen='config'; render(); }
+else{
   try{
     const app=initializeApp(firebaseConfig);
-    fdb=getFirestore(app);
-    const auth=getAuth(app);
-    const cred=await signInAnonymously(auth);
-    myId=cred.user.uid;
-  }catch(e){ console.error(e); mode='error'; render(); return; }
-  const code=(location.hash||'').replace('#','').toUpperCase();
-  if(code&&myName){ connect(code,false); }
-  else { mode='home'; render(); }
-})();
+    auth=getAuth(app); fdb=getFirestore(app);
+    onAuthStateChanged(auth,u=>{ if(screen==='local') { onlineId=u?u.uid:null; return; } if(u) onLogin(u); else onLogout(); });
+  }catch(e){ console.error(e); screen='error'; render(); }
+}
+window.addEventListener('beforeunload',()=>{ if(search) deleteDoc(search.qref).catch(()=>{}); });
 </script>
 </body>
 </html>
