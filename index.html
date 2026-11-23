@@ -276,11 +276,11 @@ let clockOffset=0;
 const now=()=>Date.now()+clockOffset;
 
 /* ================== Цол ================== */
-const TIERS=[{n:'Начин',e:'🐦',s:4},{n:'Харцага',e:'🦅',s:4},{n:'Заан',e:'🐘',s:5},{n:'Гарьд',e:'🔥',s:5},{n:'Арслан',e:'🦁',s:5}];
-const SUBS=['III','II','I'];
+// Цол бүр 3 одтой. 3 дахь одоо авмагц дараагийн цол руу ахина.
+const TIERS=[{n:'Начин',e:'🐦',s:3},{n:'Харцага',e:'🦅',s:3},{n:'Заан',e:'🐘',s:3},{n:'Гарьд',e:'🔥',s:3},{n:'Арслан',e:'🦁',s:3}];
 function rankInfo(p){
   p=Math.max(0,p|0); let acc=0;
-  for(const t of TIERS){ for(let k=0;k<3;k++){ if(p<acc+t.s) return {tier:t.n,e:t.e,sub:SUBS[k],stars:p-acc,max:t.s,label:`${t.n} ${SUBS[k]}`}; acc+=t.s; } }
+  for(const t of TIERS){ if(p<acc+t.s) return {tier:t.n,e:t.e,sub:'',stars:p-acc,max:t.s,label:t.n}; acc+=t.s; }
   return {tier:'Аварга',e:'👑',sub:'',stars:p-acc,max:0,label:'Аварга'};
 }
 function starsHTML(p){
@@ -1468,7 +1468,7 @@ function homeProfile(){
     ${u&&!u.emailVerified?`<div class="note" style="margin-top:10px">✉️ Имэйл баталгаажаагүй байна. <a href="#" id="verify" class="lnk">Баталгаажуулах имэйл дахин илгээх</a></div>`:''}
     <div class="row" style="margin-top:14px"><label class="row note"><input type="checkbox" id="snd" ${soundOn?'checked':''}> Дуу</label><span class="grow"></span><button class="danger" id="logout">Гарах</button></div>
     <details style="margin-top:12px" ${(p.blocked||[]).length?'':''}><summary>🚫 Блоклосон хүмүүс (${(p.blocked||[]).length})</summary>${blockedSection()}</details>
-    <details style="margin-top:12px"><summary>Цолны шат</summary><div class="ladder">${TIERS.map(t=>`<div>${t.e} <b>${t.n}</b> III → II → I <span class="note">(тус бүр ${t.s} од)</span></div>`).join('')}<div>👑 <b>Аварга</b> <span class="note">(хязгааргүй од)</span></div></div></details></div>${contactLine()}`;
+    <details style="margin-top:12px"><summary>Цолны шат</summary><div class="ladder">${TIERS.map(t=>`<div>${t.e} <b>${t.n}</b> <span class="note">(${t.s} од цуглуулбал дараагийн цол)</span></div>`).join('')}<div>👑 <b>Аварга</b> <span class="note">(хязгааргүй од)</span></div></div></details></div>${contactLine()}`;
 }
 function bindHome(){
   document.querySelectorAll('[data-search]').forEach(b=>b.onclick=()=>{ homeMsg=''; startSearch(b.dataset.search); });
