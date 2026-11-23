@@ -521,8 +521,9 @@ function botMove(s,seat){
    1) Тараагчийн дараагийн хүнээс эхлэн ОРОХ / ӨНЖИХ-өө сонгоно. Сүүлийн 2 хүн хүчээр орно.
    2) Орсон хүмүүс тараагчийн дараагийн хүнээс эхлэн нөөцөөс 5 хүртэл хөзөр солино. Тараагч хамгийн сүүлд,
       мөн дэлгэсэн гоз хөзрийг өөрийн муу нэг хөзрөөр сольж авч болно.
-   3) 5 мөр тоглоно. Дүрс таарвал түүнийг тавина (илүү өндөр нь байвал заавал өндрийг), дүрс огт байхгүй бол
-      гоз заавал тавина (илүү өндөр гоз байвал түүнийг), гоз ч байхгүй бол дурын хөзөр.
+   3) 5 мөр тоглоно. Шинээр гарахдаа гоз тамга (гоз A) байвал заавал түүнийг гаргана. Дүрс таарвал түүнийг тавина
+      (илүү өндөр нь байвал заавал өндрийг; гоз гарсан бол дээгүүр гоз заавал). Дүрс огт байхгүй бол гоз
+      заавал тавина (дээгүүр гоз байвал түүнийг). Гоз ч байхгүй бол дурын хөзөр.
    4) Хүн бүр 15 оноотой эхэлнэ. Авсан мөр бүр −1. Орсон ч мөр аваагүй бол +5 (муушиг). Өнжсөн хүнд өөрчлөлтгүй.
       Онооноо түрүүлж 0 болгосон хүн ялна.                                                                 */
 const M_RANKS=['7','8','9','10','J','Q','K','A'];
@@ -623,12 +624,19 @@ function mBeats(s,a,b){
   if(mSuit(a)===mSuit(b)) return mRank(a)>mRank(b);
   return mSuit(a)===T;
 }
+const mTrumpAce=s=>s.trump.suit+7*4;   // гозын тамга (гоз A)
 function mLegal(s,seat){
   const hand=s.hands[seat]||[];
-  if(!s.trick||!s.trick.cards.length) return hand.slice();
-  const led=mSuit(s.trick.cards[0].c), best=mBest(s).c, T=s.trump.suit;
+  const T=s.trump.suit;
+  if(!s.trick||!s.trick.cards.length){
+    // шинээр гарахдаа гоз тамга байвал заавал түүнийг гаргана
+    return hand.includes(mTrumpAce(s))?[mTrumpAce(s)]:hand.slice();
+  }
+  const led=mSuit(s.trick.cards[0].c), best=mBest(s).c;
   const same=hand.filter(c=>mSuit(c)===led);
+  // дүрс таарвал дүрсээ тавина; илүү том нь байвал томыг (гоз гарсан бол дээгүүр гоз заавал)
   if(same.length){ const hi=same.filter(c=>mBeats(s,c,best)); return hi.length?hi:same; }
+  // дүрс байхгүй бол гоз заавал; дүрсийг гозоор идсэн бол дээгүүр гоз байвал түүнийг
   const tr=hand.filter(c=>mSuit(c)===T);
   if(tr.length){ const hi=tr.filter(c=>mBeats(s,c,best)); return hi.length?hi:tr; }
   return hand.slice();
@@ -638,7 +646,8 @@ function mPlay(s,seat,card){
   if(s.turn!==seat) throw 'Таны ээлж биш байна.';
   if(!(s.hands[seat]||[]).includes(card)) throw 'Гарт байхгүй хөзөр.';
   if(!mLegal(s,seat).includes(card)){
-    const led=s.trick.cards.length?mSuit(s.trick.cards[0].c):-1;
+    if(!s.trick.cards.length) throw 'Гоз тамгаа (гоз A) эхэлж гаргах ёстой.';
+    const led=mSuit(s.trick.cards[0].c);
     throw (s.hands[seat].some(c=>mSuit(c)===led))?'Тэр дүрсээ тавих ёстой (илүү өндөр нь байвал өндрийг).':'Дүрс байхгүй тул гоз тавих ёстой.';
   }
   s.hands[seat]=s.hands[seat].filter(c=>c!==card);
@@ -1541,7 +1550,9 @@ const RULES_M=`<details><summary>Муушигийн дүрэм</summary><ul>
 <li>Хүч: 7 &lt; 8 &lt; 9 &lt; 10 &lt; J &lt; Q &lt; K &lt; <b>A</b>. Гоз бусад бүх дүрсээс хүчтэй.</li>
 <li><b>Орох / өнжих:</b> тараагчийн дараагийн хүнээс эхлэн сонгоно. Сүүлийн 2 хүн заавал орно.</li>
 <li><b>Солих:</b> орсон хүмүүс тараагчийн дараагийн хүнээс эхлэн нөөцөөс 5 хүртэл хөзөр солино. Тараагч хамгийн сүүлд солих ба дэлгэсэн гоз хөзрийг өөрийн муу нэг хөзрөөр сольж авч болно.</li>
-<li><b>Тоглох:</b> 5 мөр. Дүрс таарвал түүнийг тавина (илүү өндөр нь байвал заавал өндрийг, байхгүй бол муу дүрсээ өгнө). Дүрс огт байхгүй бол гоз заавал тавина. Гоз ч байхгүй бол дурын хөзөр.</li>
+<li><b>Тоглох:</b> 5 мөр. Шинээр гарахдаа <b>гоз тамга</b> (гоз A) байвал заавал түүнийг гаргана.</li>
+<li>Дүрс таарвал түүнийг тавина: илүү том нь байвал заавал томыг, байхгүй бол муу дүрсээ өгнө. <b>Гоз гарсан</b> үед дээгүүр гоз байвал заавал түүнийг тавина.</li>
+<li>Дүрс огт байхгүй бол <b>гоз</b> заавал тавина. Дүрсийг гозоор идсэн бол дээгүүр гоз байвал түүнийг тавина. Гоз ч байхгүй бол дурын хөзөр.</li>
 <li><b>Оноо:</b> хүн бүр 15 оноотой эхэлнэ. Авсан мөр бүр −1. Орсон ч нэг ч мөр аваагүй бол <b>+5 (муушиг)</b>. Өнжсөн хүнд өөрчлөлтгүй. Онооноо түрүүлж 0 болгосон хүн ялна.</li>
 <li>Ээлж бүр 30 секунд. Цаг дуусвал: өнжих боломжтой бол өнжинө, солихгүй, хамгийн бага хөзрөө тавина.</li>
 </ul></details>`;
@@ -1623,7 +1634,7 @@ function renderMGame(){
       hint=`Та тараагч. Муу нэг хөзрөө сонгож дэлгэсэн гоз (${mCardTxt(s.trump.card)})-оор сольж болно.`;
     }else if(myTurn&&s.phase==='play'){
       act=`<button id="mPlayBtn" ${selected.size===1?'':'disabled'}>Тавих</button>`;
-      hint=s.trick.cards.length?'Тодруулсан хөзрүүдээс нэгийг тавина.':'Та эхэлнэ — дурын хөзөр тавина.';
+      hint=s.trick.cards.length?'Тодруулсан хөзрүүдээс нэгийг тавина.':((s.hands[me]||[]).includes(mTrumpAce(s))?'Та эхэлнэ — гоз тамгаа заавал гаргана.':'Та эхэлнэ — дурын хөзөр тавина.');
     }
     html+=`<div class="panel me ${myTurn?'turn':''}">
       <div class="mebar"><div><b>${esc(nameOf(me))}</b> ${topBadge(myId)} ${voiceIcon(myId)} <span class="note">· <b class="gold">${s.scores[myId]??M_START}</b> оноо${inPlay&&s.phase!=='decide'?` · ${s.tricks[me]||0} мөр`:''}${passedMe?' · 💤 өнжсөн':''}${me===s.dealer?' · Т (тараагч)':''}</span></div>
@@ -1691,7 +1702,7 @@ function bindMGame(){
 }
 function mLegalHint(s,me){
   const led=s.trick.cards.length?mSuit(s.trick.cards[0].c):-1;
-  if(led<0) return '';
+  if(led<0) return 'Гоз тамга (гоз A) байгаа тул түүнийг эхэлж гаргах ёстой.';
   return (s.hands[me]||[]).some(c=>mSuit(c)===led)?`${SUITS[led]} дүрсээ тавих ёстой (илүү өндөр нь байвал өндрийг).`:`${SUITS[led]} байхгүй тул гоз ${SUITS[s.trump.suit]} тавих ёстой.`;
 }
 
